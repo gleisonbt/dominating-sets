@@ -7,16 +7,13 @@ import graph.Vertex;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.awt.geom.Line2D;
-import java.awt.geom.QuadCurve2D;
-import java.util.ArrayList;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
+import javax.swing.JLayeredPane;
 import javax.swing.JPanel;
 
 import main.MapFunction;
@@ -24,103 +21,102 @@ import main.Utils;
 
 public class GraphUI extends JPanel{
 	private Graph g;
-	private final Map<String,VertexUI>vertices;
-	private final List<Shape>edges;
-	private final JPanel panel0,panel1;
+	private final Map<Vertex,VertexUI>vertices;
+	private final Map<Edge,EdgeUI>edges;
 	private int vs;
 	public GraphUI() {
 		super();
-		this.edges = new ArrayList<Shape>();
-		this.panel0 = new JPanel();
-		this.panel1 = new JPanel();
+		this.vertices=new HashMap<Vertex, VertexUI>();
+		this.edges=new HashMap<Edge, EdgeUI>();
 		this.setLayout(null);
-		panel0.setLayout(null);
-		panel1.setLayout(null);
-		this.add(panel0);
-		this.add(panel1);
-		this.panel0.setOpaque(true);
-		this.panel1.setOpaque(true);
-		this.vertices=new HashMap<String, VertexUI>();
+
+		this.addComponentListener(new ComponentAdapter() {
+			@Override
+			public void componentResized(ComponentEvent arg0) {
+				super.componentResized(arg0);
+				redraw();				
+			}
+		});
 	}
-	
-	@Override
-	public void paint(final Graphics graphics) {
-		super.paint(graphics);
-		redraw();
-		
-	}
-	private void redraw() {
+
+	void redraw(){
 		if(g==null){return;}
-		this.panel0.setSize(this.getSize());
-		this.panel1.setSize(this.getSize());
-		
-		final int x = (int)(this.getSize().width/2.3);
-		final int y = (int)(this.getSize().height/2.3);
+
+		final int x = (int)(getSize().width/2.3);
+		final int y = (int)(getSize().height/2.3);
 		final double telda = Math.PI / vs;
 		final double para  = Math.sqrt(x*x+y*y)/2;
 		final int d = (int) para/2;
-		
-		Iterator<VertexUI>it=this.vertices.values().iterator();
+
+		Iterator<VertexUI>it=vertices.values().iterator();
 		for (int i = 0; it.hasNext(); ++i){
 			final int xi = (int) (x + para * Math.cos(i * 2 * telda));
 			final int yi = (int) (y + para * Math.sin(i * 2 * telda));
 			final VertexUI v = it.next();
 			v.setLocation(xi, yi);
 			v.setSize(new Dimension(d,d));
-			v.revalidate();
+			//v.invalidate();
+			//v.revalidate();
 		}
-		
-		Utils.map(g.getEdges(), new MapFunction<Edge>() {
-			@Override
-			public void map(int index, Edge value) {
-				final VertexUI v1 = GraphUI.this.vertices.get(value.getVertex1().getName());
-				final VertexUI v2 = GraphUI.this.vertices.get(value.getVertex2().getName());
-				double x1 = v1.getLocation().x+d/2;
-				double y1 = v1.getLocation().y+d/2;
-				double x2 = v2.getLocation().x+d/2;
-				double y2 = v2.getLocation().y+d/2;
-				((Graphics2D) panel1.getGraphics()).draw(new Line2D.Double(x1,y1,x2,y2));
-			}
-		});
 
+		for(final Edge edge:g.getEdges()){
+			final VertexUI v1 = GraphUI.this.vertices.get(edge.getVertex1());
+			final VertexUI v2 = GraphUI.this.vertices.get(edge.getVertex2());
+			int x1 = v1.getLocation().x+d/2;
+			int y1 = v1.getLocation().y+d/2;
+			int x2 = v2.getLocation().x+d/2;
+			int y2 = v2.getLocation().y+d/2;
+			
+			final EdgeUI e = this.edges.get(edge);
+			
+			e.setBounds2(x1, y1, x2, y2);
+			//e.invalidate();
+			//e.revalidate();
+		}
+		invalidate();
+		revalidate();
+		repaint();
 	}
 	
+
+	
 	void setVertexBackColor(Vertex vertex,Color color){
-		this.vertices.get(vertex.getName()).setVertexBackColor(color);
+		this.vertices.get(vertex).setVertexBackColor(color);
 	}
 
 	public void setGraph(Graph g) {
 		this.vertices.clear();
-		this.panel0.removeAll();
-		this.panel1.removeAll();
-		Utils.map(g.getVerticies(), new MapFunction<Vertex>() {
-			@Override
-			public void map(final int index,final Vertex value) {
-				final VertexUI vui = new VertexUI(value){
-					@Override
-					public void clicked() {
-						vertexClicked(value);
-						super.clicked();
-					}
-				};
-				vertices.put(value.getName(),vui);
-				panel0.add(vui);
-			}
-		});
+		this.edges.clear();
+		this.removeAll();
+		
+		for(final Vertex vertex:g.getVerticies()){
+			final VertexUI vui = new VertexUI(vertex){
+				@Override
+				public void clicked() {
+					vertexClicked(vertex);
+					super.clicked();
+				}
+			};
+			vertices.put(vertex,vui);
+			add(vui);
+		}
+
+		for(final Edge edge:g.getEdges()){
+			final EdgeUI edgeUI = new EdgeUI(edge);
+			this.edges.put(edge, edgeUI);
+			add(edgeUI);
+		}
+
 		this.g=g;
 		vs = g.getVerticies().length;
 		redraw();
-		revalidate();
-		invalidate();
-		validate();
-		repaint();
 	}
 	public Graph getGraph() {
 		return g;
 	}
 
 	public void vertexClicked(Vertex vertex){}
-	
+
 	public void resetAllVerticesBackColor() {
 		for(VertexUI vui:this.vertices.values()){
 			vui.setVertexBackColor(Color.white);

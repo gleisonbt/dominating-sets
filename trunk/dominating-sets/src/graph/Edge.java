@@ -22,4 +22,7 @@ public class Edge {
 	public Vertex getVertex2() {
 		return v2;
 	}
+	public String getName() {
+		return name;
+	}
 }
