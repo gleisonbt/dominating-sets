@@ -6,8 +6,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -45,8 +43,8 @@ public class VertexUI extends JComponent{
 	}
 		
 	@Override
-	public void paint(Graphics graphics) {
-		
+	public void paintComponent(Graphics graphics) {
+		super.paintComponent(graphics);
 		final int d = (int)Math.sqrt(Math.pow(getSize().width, 2)+Math.pow(getSize().height, 2))/2;
 		final int x = (this.getSize().width-d)/2;
 		final int y = (this.getSize().height-d)/2;
@@ -66,8 +64,7 @@ public class VertexUI extends JComponent{
 		graphics.setColor(vertex.isDominant()?Color.white:Color.black);
 		graphics.drawOval(x, y, d, d);	
 		graphics.drawString(name, fx, fy);
-		
-		super.paint(graphics);
+
 	}
 
 	public void setVertexBackColor(Color vertexBackColor) {
