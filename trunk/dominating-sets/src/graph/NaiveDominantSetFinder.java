@@ -1,5 +1,7 @@
 package graph;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,21 +19,24 @@ public class NaiveDominantSetFinder implements DominantSetFinder {
 		for(Vertex v:g.getVerticies()){
 			v.setDominant(true);
 		}
-		for(Vertex v:g.getVerticies()){
-			v.setDominant(false);
-			for(Vertex n:g.getVerticies()){
-				if(!n.isLinkedToDominantVertex()){
-					v.setDominant(true);
-					break;
-				}
-			}
-		}
 		this.dominantSet.clear();
-		for(Vertex v:g.getVerticies()){
-			if(v.isDominant()){
-				this.dominantSet.add(v);
+		this.dominantSet.addAll(Arrays.asList(g.getVerticies()));
+		int size;
+		int i=1;
+		do{
+			size = this.dominantSet.size();
+			System.out.printf("iteration [%d] dominantion factor : %d\n",i++,size);
+			final Collection<Vertex>dominantSetCopy = new HashSet<Vertex>(dominantSet);
+			for(Vertex v:dominantSetCopy){
+				v.setDominant(false);
+				this.dominantSet.remove(v);
+				if(g.hasVertexNotLinkedToDominantVertex()){
+					v.setDominant(true);
+					this.dominantSet.add(v);	
+				}
+				
 			}
-		}
+		}while(size!=this.dominantSet.size());
 	}
 	
 	@Override

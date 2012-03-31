@@ -3,44 +3,76 @@ package ui;
 import graph.Vertex;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
-import java.awt.event.MouseAdapter;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
 import javax.swing.JComponent;
 
-public class VertexUI extends JComponent{
+public abstract class VertexUI extends JComponent implements MouseMotionListener,MouseListener{
 	private Vertex vertex;
 	private Color vertexBackColor = Color.white;
 	public VertexUI(Vertex vertex){
 		super();
 		this.vertex=vertex;
+		
 		this.setOpaque(true);
 		this.setFont(new Font(Font.SANS_SERIF,Font.PLAIN,12));
-		this.addMouseListener(new MouseAdapter() {
-			private Color color;
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				clicked();
-				super.mouseClicked(e);
-			}
-			
-			@Override
-			public void mousePressed(MouseEvent e) {
-				super.mousePressed(e);
-				color = getVertexBackColor();
-				setVertexBackColor(Color.orange);
-			}
-			
-			@Override
-			public void mouseReleased(MouseEvent e) {
-				super.mouseReleased(e);
-				setVertexBackColor(color);
-			}
-		});
+		this.addMouseListener(this);
+		this.addMouseMotionListener(this);
 	}
+	
+	@Override
+	public String getName() {
+		return vertex.getName();
+	}
+	
+	private Color color;
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		clicked();
+	}
+	
+	@Override
+	public void mouseEntered(MouseEvent arg0) {
+		
+	}
+	@Override
+	public void mouseExited(MouseEvent arg0) {
+		
+	}
+	
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		
+	}
+	
+	private Point start;
+	@Override
+	public void mousePressed(MouseEvent e) {
+		color = getVertexBackColor();
+		setVertexBackColor(Color.orange);
+		start = e.getPoint();
+	}
+	
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		setVertexBackColor(color);
+	}
+	
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		Point p = e.getPoint();
+		Component c = e.getComponent();
+		c.setLocation(c.getX()+(int)(p.getX() - start.getX()), c.getY()+(int)(p.getY() - start.getY()));
+		c.repaint();
+	}
+	
 		
 	@Override
 	public void paintComponent(Graphics graphics) {
@@ -59,9 +91,9 @@ public class VertexUI extends JComponent{
 		final int fx = (int)(this.getSize().width-w)/2;
 		final int fy = (int)(this.getSize().height+h)/2;
 		
-		graphics.setColor(vertex.isDominant()?Color.green:this.getVertexBackColor());
+		graphics.setColor(vertex.isDominant()?Color.GREEN:this.getVertexBackColor());
 		graphics.fillOval(x, y, d, d);
-		graphics.setColor(vertex.isDominant()?Color.white:Color.black);
+		graphics.setColor(vertex.isDominant()?Color.BLUE:Color.black);
 		graphics.drawOval(x, y, d, d);	
 		graphics.drawString(name, fx, fy);
 
@@ -75,5 +107,9 @@ public class VertexUI extends JComponent{
 		return this.vertexBackColor;
 	}
 
-	public void clicked(){}
+	public Vertex getVertex() {
+		return vertex;
+	}
+	
+	public abstract void clicked();
 }
