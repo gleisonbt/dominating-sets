@@ -7,10 +7,14 @@ import graph.Vertex;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.FileWriter;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -73,12 +77,30 @@ public abstract class GraphViewer extends JFrame{
 				graphInfo.setConnected(""+graphUI.getGraph().isConnected());
 			}
 			@Override
-			public void fileOpened() {
+			public void fileOpened(String configuration) {
 				process();
+				relocateVerticies(configuration);
 			}
 			@Override
-			public void fileSaved() {
-				
+			public void fileSaved(String fileName) {
+				try{
+					final StringBuffer sb = new StringBuffer();
+					sb.append("\nCONFIGURATION\n");
+					VertexUI[]verticies=graphUI.getVertices();
+					if(verticies.length>0){
+						for(final VertexUI vertex:verticies){
+							sb.append(vertex.getName()+",x="+vertex.getX()+",y="+vertex.getY()+"\n");
+						}
+						sb.setLength(sb.length()-1);
+					}
+					final boolean append = true;
+					final FileWriter fw = new FileWriter(fileName,append);
+					fw.append(sb);
+					fw.flush();
+					fw.close();
+				}catch(Throwable t){
+					t.printStackTrace();
+				}
 			}
 		};
 		
@@ -90,8 +112,24 @@ public abstract class GraphViewer extends JFrame{
 		this.panel1.setMaximumSize(panel1.getPreferredSize());
 		this.getContentPane().add(panel1,BorderLayout.WEST);
 		this.getContentPane().add(panel2,BorderLayout.CENTER);
-		this.setPreferredSize(new Dimension(650,500));
+		this.setPreferredSize(new Dimension(700,400));
 		this.pack();
+	}
+	protected void relocateVerticies(String configuration) {
+		System.out.println(configuration);
+		final Pattern pattern = Pattern.compile("(?:([^\\,]+)[,]x[=]([-]?[0-9]+)[,]y[=]([-]?[0-9]+)(?:(\\r|\\n){0,2}))");
+		final Matcher matcher = pattern.matcher(configuration);
+		while(matcher.find()){
+			System.out.println("Vertex : " + matcher.group(1));
+			System.out.println("X : " + matcher.group(2));
+			System.out.println("Y : " + matcher.group(3));
+			final VertexUI vertex = this.graphUI.getVertex(matcher.group(1));
+			final int x = Integer.valueOf(matcher.group(2));
+			final int y = Integer.valueOf(matcher.group(3));
+			final Point point = new Point(x,y);
+			vertex.setLocation(point);
+			
+		}
 	}
 	protected void findDominantSet() {
 		if(graphConf.getSelectedSolver()==DominantSetSolverSelectionPanel.NAIVE){

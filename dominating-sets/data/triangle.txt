@@ -1,3 +1,7 @@
 (a,b)
 (b,c)
 (a,c)
+CONFIGURATION
+b,x=224,y=112
+c,x=42,y=204
+a,x=41,y=13

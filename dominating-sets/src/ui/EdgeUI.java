@@ -27,18 +27,10 @@ public class EdgeUI extends JComponent {
 		super();
 		this.edge=edge;
 		setOpaque(true);
-		this.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mousePressed(MouseEvent arg0) {
-				super.mousePressed(arg0);
-				setBorder(BorderFactory.createEtchedBorder());
-			}
-			@Override
-			public void mouseReleased(MouseEvent arg0) {
-				super.mouseReleased(arg0);
-				setBorder(BorderFactory.createEmptyBorder());
-			}
-		});
+	}
+	
+	public Edge getEdge() {
+		return edge;
 	}
 	
 	@Override
@@ -69,8 +61,8 @@ public class EdgeUI extends JComponent {
 	}
 	
 	public void setBounds2(int x1,int y1,int x2,int y2){
-		int x = min(x1,x2);
-		int y = min(y1,y2);
+		final int x = min(x1,x2);
+		final int y = min(y1,y2);
 		int w = max(x1,x2) - x;
 		int h = max(y1,y2) - y;
 		

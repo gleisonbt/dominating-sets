@@ -3,3 +3,8 @@
 (a,c), (d,b)
 (a,d)
 (c,d)
+CONFIGURATION
+d,x=152,y=131
+b,x=154,y=251
+c,x=36,y=52
+a,x=275,y=72

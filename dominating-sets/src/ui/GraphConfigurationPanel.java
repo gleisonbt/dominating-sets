@@ -28,8 +28,8 @@ public abstract class GraphConfigurationPanel extends JPanel implements ActionLi
 	public static final String SAVE_ACTION = "Save";
 	public static final String OPEN_ACTION = "Open";
 	public static final String ROTATE_ACTION = "Rotate";
-	public abstract void fileOpened();
-	public abstract void fileSaved();
+	public abstract void fileOpened(String positions);
+	public abstract void fileSaved(String fileName);
 	public abstract void process();
 	final JPanel panel0,panel1,panel2;
 	final JLabel label;
@@ -49,7 +49,7 @@ public abstract class GraphConfigurationPanel extends JPanel implements ActionLi
 		this.setLayout(new BorderLayout(5,5));
 		this.panel0.setLayout(new BorderLayout(10,10));
 		
-		this.panel1.setLayout(new FlowLayout(FlowLayout.LEFT,1,1));
+		this.panel1.setLayout(new FlowLayout(FlowLayout.LEFT,3,5));
 		this.add(panel0,BorderLayout.NORTH);
 		this.add(panel1,BorderLayout.CENTER);
 		this.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
@@ -78,7 +78,7 @@ public abstract class GraphConfigurationPanel extends JPanel implements ActionLi
 		this.panel1.add(button4);
 		
 		this.panel1.add(button1);
-		this.panel1.add(button5);
+		//this.panel1.add(button5);
 		this.panel1.add(button2);
 		
 		button5.setEnabled(false);
@@ -104,14 +104,14 @@ public abstract class GraphConfigurationPanel extends JPanel implements ActionLi
 		if(fc.showOpenDialog(this)==JFileChooser.APPROVE_OPTION){
 			try{
 				field.setText("");
-				
-				final FileReader fr = new FileReader(fc.getSelectedFile());
+				final String fileName = fc.getSelectedFile().getAbsolutePath();
+				final FileReader fr = new FileReader(fileName);
 				final StringBuffer sb = new StringBuffer();
 				for(int i;(i=fr.read())>-1;sb.append((char)i)){}
-				field.setText(sb.toString());
-				
+				String[]contents=sb.toString().split("(\\n|\\r)+CONFIGURATION(\\n|\\r)+");
+				field.setText(contents[0]);
 				fr.close();
-				fileOpened();
+				fileOpened(contents[1]);
 			}catch(Throwable t){
 				t.printStackTrace();
 			}
@@ -122,11 +122,12 @@ public abstract class GraphConfigurationPanel extends JPanel implements ActionLi
 		final JFileChooser fc = new JFileChooser(new File("./data/"));
 		if(fc.showSaveDialog(this)==JFileChooser.APPROVE_OPTION){
 			try{
-				final FileWriter fw = new FileWriter(fc.getSelectedFile());
+				final String fileName = fc.getSelectedFile().getAbsolutePath();
+				final FileWriter fw = new FileWriter(fileName);
 				fw.write(field.getText());
 				fw.flush();
 				fw.close();
-				fileSaved();
+				fileSaved(fileName);
 			}catch(Throwable t){
 				t.printStackTrace();
 			}

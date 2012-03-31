@@ -83,6 +83,15 @@ public class Graph {
 		return visited.size()==this.verticies.size();
 	}
 	
+	public boolean hasVertexNotLinkedToDominantVertex(){
+		for(Vertex v:this.verticies.values()){
+			if(!(v.isDominant() || v.isLinkedToDominantVertex())){
+				return true;
+			}
+		}
+		return false;
+	}
+	
 	public Vertex getVertix(String name){
 		return this.verticies.get(name);
 	}

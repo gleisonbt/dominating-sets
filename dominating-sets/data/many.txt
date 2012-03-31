@@ -1,5 +1,16 @@
-(a,b), (j,y)
-(b,c) ,(b,j)
-(a,c), (d,b)
-(a,d), (y,j)
-(c,d), (u,y)
+(a,b), (j,y) (b,r)
+(b,c) ,(b,j) (y,r)
+(a,c), (d,b) (o,r)
+(a,d), (y,j) (j,x)
+(c,d), (u,y) (u,j)
+CONFIGURATION
+d,x=106,y=198
+u,x=178,y=-5
+b,x=107,y=119
+r,x=64,y=2
+c,x=3,y=216
+a,x=190,y=263
+o,x=16,y=96
+j,x=288,y=98
+y,x=167,y=75
+x,x=290,y=214
