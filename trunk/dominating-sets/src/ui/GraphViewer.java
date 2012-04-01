@@ -20,7 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import solver.DominantSetFinder;
+import solver.DominantSetSolver;
 import ui.graph.GraphUI;
 import ui.graph.VertexUI;
 import ui.graph.layout.AbstractGraphLayout;
@@ -160,14 +160,13 @@ public abstract class GraphViewer extends JFrame{
 	}
 	protected void findDominantSet() {
 		try{
-			long t = new Date().getTime();
-			final DominantSetFinder ndsf = solverPanel.getSelectedSolver().newInstance();
+			final DominantSetSolver ndsf = solverPanel.getSelectedSolver().newInstance();
 			ndsf.setGraph(graphUI.getGraph());
-			ndsf.findDominantSet();
-			t = new Date().getTime()-t;
+			ndsf.solve();
 			graphInfo.setInfo(GraphData.Dominant,ndsf.getDominationNumber());
 			graphInfo.setInfo(GraphData.Iterations, ndsf.getIteratinos());
-			graphInfo.setInfo(GraphData.SolveTime,t+"ms");
+			graphInfo.setInfo(GraphData.SolveTime,ndsf.getElapsedTime()+"ms");
+			graphInfo.setInfo(GraphData.isSolved, !graphUI.getGraph().hasVertexNotLinkedToDominantVertex());
 		}catch(Throwable t){
 			t.printStackTrace();
 		}
