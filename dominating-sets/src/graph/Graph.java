@@ -22,7 +22,7 @@ public class Graph {
 	/**
 	 * instantiate new graph with its data structure
 	 * @param name the name of the graph
-	 * @param configuration graph structure 
+	 * @param configuration graph structure
 	 */
 	public Graph(char name,String configuration) {
 		this.configuration=configuration;
@@ -75,6 +75,15 @@ public class Graph {
 		//the graph
 		return visited.size()==this.vertecies.size();
 	}
+	public Set<Vertex>getVertecisNotLinkedToDominantVertex(){
+		Set<Vertex>set=new HashSet<Vertex>();
+		for(Vertex v:this.vertecies.values()){
+			if(!(v.isDominant() || v.isLinkedToDominantVertex())){
+				set.add(v);
+			}
+		}
+		return set;
+	}
 	public boolean hasVertexNotLinkedToDominantVertex(){
 		for(Vertex v:this.vertecies.values()){
 			if(!(v.isDominant() || v.isLinkedToDominantVertex())){
@@ -83,7 +92,7 @@ public class Graph {
 		}
 		return false;
 	}
-	
+
 	public Vertex getVertix(String name){
 		return this.vertecies.get(name);
 	}
@@ -126,7 +135,7 @@ public class Graph {
 
 	public String getConnectedPrologSyntax(){
 		final StringBuffer sb = new StringBuffer();
-		
+
 		sb.append((isConnected()?"":"not_")+ "connected([");
 		Utils.map(this.edges.values(), new MapFunction<Edge>() {
 			public void map(int index, Edge e) {

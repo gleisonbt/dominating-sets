@@ -15,8 +15,8 @@ import java.util.Set;
  * vertex u in N(v) retransmit the message (id) along with their own
  * messages to their neighbors as well. at the end, nodes which
  * have the largest number of collected messages, are deemed as
- * part of the dominant set 
- * 
+ * part of the dominant set
+ *
  * @author Hussain Al-Mutawa
  * @version 1.0
  *
@@ -29,33 +29,45 @@ public class LargestIDDominantSetSolver extends AbstractDominantSetSolver {
 		final Graph g = getGraph();
 		final Set<Vertex>V = new HashSet<Vertex>(Arrays.asList(g.getVertecies()));
 		final Set<Vertex>dominantSet = new HashSet<Vertex>();
-		//initialize vertecis map
-		for(Vertex v:V){
-			ids.put(v, new HashSet<String>());
-			incrementIterations();
-		}
-		int max=0;
-		for(Vertex v:V){
-			incrementIterations();
-			for(Vertex u:v.getNeighborVertecies()){
-				ids.get(u).add(v.getName());
-				ids.get(u).addAll(ids.get(v));
-				max = Math.max(max, ids.get(u).size());
+		boolean more = false;
+		do{
+			//initialize vertecis map
+			for(Vertex v:V){
+				if(v.isVisited()) continue;
+				ids.put(v, new HashSet<String>());
 				incrementIterations();
 			}
-			
-		}
-		final Iterator<Vertex>it=V.iterator();
-		for(;it.hasNext();){
-			final Vertex v = it.next();
-			if(ids.get(v).size()==max){
-				dominantSet.add(v);
-				V.remove(v);
+			int max=-1;
+			for(Vertex v:V){
+				if(v.isVisited()) continue;
+				incrementIterations();
+				for(Vertex u:v.getNeighborVertecies()){
+					if(u.isVisited()) continue;
+					ids.get(u).add(v.getName());
+					ids.get(u).addAll(ids.get(v));
+					max = Math.max(max, ids.get(u).size());
+					incrementIterations();
+				}
+
 			}
+			if(max==-1) break;
+			final Iterator<Vertex>it=V.iterator();
+			while(it.hasNext()){
+				final Vertex v = it.next();
+				if(v.isVisited()) continue;
+				if(ids.get(v).size()==max){
+					v.setVisited();
+					more=true;
+				}
+				incrementIterations();
+			}
+		}while(more);
+
+		for(final Iterator<Vertex> it=V.iterator();it.hasNext();){
+			final Vertex v = it.next();
+			if(!v.isVisited()) { v.setDominant(); dominantSet.add(v);}
 			incrementIterations();
 		}
-		
-		
 		return dominantSet;
 	}
 

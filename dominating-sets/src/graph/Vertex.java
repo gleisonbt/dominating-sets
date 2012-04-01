@@ -76,4 +76,7 @@ public class Vertex {
 	public void setConnectness(double connectness) {
 		this.connectness = connectness;
 	}
+	public void setDominant() {
+		this.setDominant(true);
+	}
 }
