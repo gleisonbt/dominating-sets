@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import main.MapFunction;
 import main.Utils;
@@ -17,9 +15,6 @@ import main.Utils;
  * @since 1.0
  */
 public class Graph {
-	public static final String NAME_RX     = "([a-z]{1,2}[0-9]?)";
-	public static final String RELATION_RX = "[(]"+NAME_RX+"(?:(?:\\s*[,]\\s*\\n*\\r*)?)"+NAME_RX+"[)]";
-	public static final String CONFIG_RX   = "[{]?("+RELATION_RX+"(?:(?:\\s*[,]?\\s*\\n*\\r*)?))+[}]?";
 	private final Map<String,Edge>edges;
 	private final Map<String,Vertex>verticies;
 	private final char name;
@@ -27,22 +22,20 @@ public class Graph {
 	/**
 	 * instantiate new graph with its data structure
 	 * @param name the name of the graph
-	 * @param configuration graph structure e.g. {(v1,v2),(v2,v3),...,(vi,vj)}
+	 * @param configuration graph structure 
 	 */
 	public Graph(char name,String configuration) {
 		this.configuration=configuration;
 		this.name=name;
-		if(!configuration.matches(CONFIG_RX)){
-			throw new IllegalArgumentException("Invalid configuration");
-		}
-		Pattern pattern = Pattern.compile(RELATION_RX);
-		Matcher matcher = pattern.matcher(configuration);
 		this.edges=new HashMap<String, Edge>();
 		this.verticies=new HashMap<String, Vertex>();
-		while(matcher.find()){
+		String []pairs = configuration.split("\\s+");
+		for(String pair:pairs){
+			//System.out.printf("%s-",pair);
 			final String en = "e"+edges.size();
-			final String vi = matcher.group(1);
-			final String vj = matcher.group(2);
+			final String[]vs= pair.split("[,]");
+			final String vi = vs[0];
+			final String vj = vs[1];
 
 			final Vertex v1 = verticies.containsKey(vi)? verticies.get(vi) : new Vertex(vi);
 			final Vertex v2 = verticies.containsKey(vj)? verticies.get(vj) : new Vertex(vj);

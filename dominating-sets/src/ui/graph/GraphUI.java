@@ -1,4 +1,4 @@
-package ui;
+package ui.graph;
 
 import graph.Edge;
 import graph.Graph;
@@ -10,12 +10,16 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.JPanel;
 
-public class GraphUI extends JPanel{
+import ui.graph.layout.CircularGraphLayout;
+import ui.graph.layout.GraphLayout;
+import ui.graph.layout.LayoutAdaptor;
+
+public abstract class GraphUI extends JPanel{
+	public abstract Class<? extends GraphLayout>getGraphLayout();
 	private Graph g;
 	private final Map<String,VertexUI>vertices;
 	private final Map<String,EdgeUI>edges;
@@ -30,23 +34,14 @@ public class GraphUI extends JPanel{
 			@Override
 			public void componentResized(ComponentEvent arg0) {
 				super.componentResized(arg0);
-				recompute();
 				redraw(REDRAW_ZOOM);				
 			}
 		});
 		//this.setTransferHandler(new TransferHandler("location"));
 	}
 
-	protected void recompute() {
-		x = (int)(getSize().width/2.3);
-		y = (int)(getSize().height/2.3);
-		telda = Math.PI / vs;
-		para  = Math.sqrt(x*x+y*y)/2;
-		d = (int) para/2;
-	}
 
 	void redraw(){
-		recompute();
 		redraw(REDRAW_VERTICIES|REDRAW_EDGES);
 	}
 
@@ -69,9 +64,7 @@ public class GraphUI extends JPanel{
 		repaint();
 	}
 	
-	private int x,y,d;
-	private double telda,para;
-	
+	private int x,y,vertexSize=30;
 	
 	private void redrawEdges(){
 		
@@ -83,10 +76,10 @@ public class GraphUI extends JPanel{
 	private void redrawEdge(Edge edge) {
 		final VertexUI v1 = GraphUI.this.vertices.get(edge.getVertex1().getName());
 		final VertexUI v2 = GraphUI.this.vertices.get(edge.getVertex2().getName());
-		int x1 = v1.getLocation().x+d/2;
-		int y1 = v1.getLocation().y+d/2;
-		int x2 = v2.getLocation().x+d/2;
-		int y2 = v2.getLocation().y+d/2;
+		int x1 = v1.getLocation().x+vertexSize/2;
+		int y1 = v1.getLocation().y+vertexSize/2;
+		int x2 = v2.getLocation().x+vertexSize/2;
+		int y2 = v2.getLocation().y+vertexSize/2;
 		
 		final EdgeUI e = this.edges.get(edge.getName());
 		
@@ -94,17 +87,10 @@ public class GraphUI extends JPanel{
 	}
 
 	private void redrawVerticies() {
-		Iterator<VertexUI>it=vertices.values().iterator();
-		for (int i = 0; it.hasNext(); ++i){
-			final int xi = (int) (x + para * Math.cos(i * 2 * telda));
-			final int yi = (int) (y + para * Math.sin(i * 2 * telda));
-			final VertexUI v = it.next();
-			v.setLocation(xi, yi);
-			v.setSize(new Dimension(d,d));
-		}
+		new LayoutAdaptor(g, getSize(), getVertices(), getGraphLayout());
 	}
 
-	void setVertexBackColor(Vertex vertex,Color color){
+	public void setVertexBackColor(Vertex vertex,Color color){
 		this.vertices.get(vertex.getName()).setVertexBackColor(color);
 	}
 
@@ -137,6 +123,7 @@ public class GraphUI extends JPanel{
 				}
 			});
 			vertices.put(vertex.getName(),vui);
+			vui.setSize(new Dimension(vertexSize,vertexSize));
 			add(vui);
 		}
 

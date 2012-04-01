@@ -1,4 +1,4 @@
-package ui;
+package ui.graph;
 
 import graph.Vertex;
 

@@ -1,0 +1,11 @@
+aaa,bbb
+aba,bjb
+imk,aaa
+imk,aba
+bbb,bjb
+CONFIGURATION
+aba,x=304,y=164
+aaa,x=219,y=280
+bjb,x=82,y=236
+imk,x=82,y=91
+bbb,x=219,y=47
