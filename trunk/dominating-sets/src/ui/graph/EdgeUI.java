@@ -1,4 +1,4 @@
-package ui;
+package ui.graph;
 
 import graph.Edge;
 
@@ -15,14 +15,7 @@ import javax.swing.JComponent;
 public class EdgeUI extends JComponent {
 	private final Edge edge;
 	
-	public final static int NWSE = 0; // North-west -> South-east
-	public final static int NESW = 1;
-	public final static int SWNE = 2;
-	public final static int SENW = 3;
-	public final static int WE = 4;
-	public final static int NS = 5;
-	
-	private int d=NWSE;
+	private EdgeDirection edgeDirection=EdgeDirection.NWSE;
 	public EdgeUI(Edge edge) {
 		super();
 		this.edge=edge;
@@ -36,7 +29,8 @@ public class EdgeUI extends JComponent {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		switch(d){
+		g.setColor(Color.MAGENTA);
+		switch(edgeDirection){
 		case NWSE:
 			g.drawLine(0, 0, getSize().width, getSize().height);
 			break;
@@ -66,12 +60,12 @@ public class EdgeUI extends JComponent {
 		int w = max(x1,x2) - x;
 		int h = max(y1,y2) - y;
 		
-		     if(x1<x2 && y1<y2){d=NWSE;}
-		else if(x1<x2 && y1>y2){d=SWNE;}
-		else if(x1>x2 && y1<y2){d=NESW;}
-		else if(x1>x2 && y1>y2){d=NWSE;}
-		if(abs(x1-x2)<5){d=NS;w=5;}
-		if(abs(y1-y2)<5){d=WE;h=5;}
+		     if(x1<x2 && y1<y2){edgeDirection=EdgeDirection.NWSE;}
+		else if(x1<x2 && y1>y2){edgeDirection=EdgeDirection.SWNE;}
+		else if(x1>x2 && y1<y2){edgeDirection=EdgeDirection.NESW;}
+		else if(x1>x2 && y1>y2){edgeDirection=EdgeDirection.NWSE;}
+		if(abs(x1-x2)<5){edgeDirection=EdgeDirection.NS;w=5;}
+		if(abs(y1-y2)<5){edgeDirection=EdgeDirection.WE;h=5;}
 		//else {throw new IllegalArgumentException();}
 		     
 		this.setBounds(x, y, w, h);		     

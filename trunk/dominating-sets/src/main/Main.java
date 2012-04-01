@@ -16,7 +16,7 @@ public class Main {
 	
 	public static void main(String[]args){
 		
-		String configuration = "{(a,b),(b,g),(b,c),(c,g),(g,d),(g,e),(f,e),(a,f),(g,f)}";
+		String configuration = "a,b b,g b,c c,g g,d g,e f,e a,f g,f";
 		Graph g = new Graph('u',configuration);
 		System.out.println(g.getVerteciesPrologSyntax());
 		System.out.println(g.getEdgesPrologSyntax());

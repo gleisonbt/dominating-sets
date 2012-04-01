@@ -9,11 +9,13 @@ public class NaiveDominantSetFinder implements DominantSetFinder {
 	private Graph g;
 	private Set<Vertex>dominantSet;
 	
-	public NaiveDominantSetFinder(Graph g) {
+	@Override
+	public void setGraph(Graph g) {
 		this.g=g;
 		this.dominantSet=new HashSet<Vertex>();
 	}
 	
+	@Override
 	public void findDominantSet(){
 		
 		for(Vertex v:g.getVerticies()){

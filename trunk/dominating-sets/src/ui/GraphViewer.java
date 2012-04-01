@@ -1,7 +1,7 @@
 package ui;
 
+import graph.DominantSetFinder;
 import graph.Graph;
-import graph.NaiveDominantSetFinder;
 import graph.Vertex;
 
 import java.awt.BorderLayout;
@@ -20,14 +20,20 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import ui.graph.GraphUI;
+import ui.graph.VertexUI;
+import ui.graph.layout.AbstractGraphLayout;
+import ui.graph.layout.GraphLayout;
 import ui.text.MyEventQueue;
 
 public abstract class GraphViewer extends JFrame{
 	private JPanel panel1,panel2;
 	public abstract void onClosed();
+	private Class<? extends GraphLayout>selectedGraphLayout=AbstractGraphLayout.class;
 	private final GraphUI graphUI;
 	private final GraphInformation graphInfo;
 	private final GraphConfigurationPanel graphConf;
+	private final GraphLayoutSelectionPanel graphLayout;
 	public GraphViewer() {
 		super("Dominant set viewer");
 		this.panel1=new JPanel();
@@ -42,10 +48,16 @@ public abstract class GraphViewer extends JFrame{
 				onClosed();
 			}
 		});
-		this.panel1.setLayout(new BorderLayout());
-		this.panel2.setLayout(new BorderLayout());
+		this.panel1.setLayout(new BorderLayout(2,2));
+		this.panel2.setLayout(new BorderLayout(2,2));
 		JPanel panel3 = new JPanel();
 		panel3.setLayout(new BorderLayout());
+		this.graphLayout = new GraphLayoutSelectionPanel() {
+			@Override
+			void layoutChanged(Class<? extends GraphLayout> layout) {
+				selectedGraphLayout = layout;
+			}
+		};
 		
 		this.graphUI = new GraphUI(){
 			public void vertexClicked(Vertex vertex) {
@@ -53,7 +65,11 @@ public abstract class GraphViewer extends JFrame{
 				Vertex[]neighbours = vertex.getNeighborVertecies();
 				for(Vertex v:neighbours){
 					graphUI.setVertexBackColor(v, Color.yellow);
-				}	
+				}
+				
+			}
+			public Class<? extends GraphLayout> getGraphLayout(){
+				return selectedGraphLayout;
 			}
 		};
 		this.graphInfo = new GraphInformation();
@@ -62,7 +78,7 @@ public abstract class GraphViewer extends JFrame{
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 				final String action = ((JButton)ae.getSource()).getText();
-				if(action.equals(GraphConfigurationPanel.PROCESS_ACTION)){
+				if(action.equals(GraphConfigurationPanel.RENDER_ACTION)){
 					process();
 				}else if(action.equals(GraphConfigurationPanel.FIND_DOMINANT_SET_ACTION)){
 					findDominantSet();
@@ -108,11 +124,12 @@ public abstract class GraphViewer extends JFrame{
 		this.panel2.add(panel3,BorderLayout.WEST);
 		this.panel2.add(graphUI,BorderLayout.CENTER);
 		this.panel1.add(graphConf,BorderLayout.CENTER);
+		this.panel1.add(graphLayout,BorderLayout.NORTH);
 		this.panel1.setPreferredSize(new Dimension(200,0));
 		this.panel1.setMaximumSize(panel1.getPreferredSize());
 		this.getContentPane().add(panel1,BorderLayout.WEST);
 		this.getContentPane().add(panel2,BorderLayout.CENTER);
-		this.setPreferredSize(new Dimension(700,400));
+		this.setPreferredSize(new Dimension(700,500));
 		this.pack();
 	}
 	protected void relocateVerticies(String configuration) {
@@ -132,14 +149,12 @@ public abstract class GraphViewer extends JFrame{
 		}
 	}
 	protected void findDominantSet() {
-		if(graphConf.getSelectedSolver()==DominantSetSolverSelectionPanel.NAIVE){
-			Graph g = graphUI.getGraph();
-			NaiveDominantSetFinder ndsf = new NaiveDominantSetFinder(g);
+		try{
+			final DominantSetFinder ndsf = graphConf.getSelectedSolver().newInstance();
+			ndsf.setGraph(graphUI.getGraph());
 			ndsf.findDominantSet();
-//			Vertex[]dominantSet=ndsf.getDominantSet();
-//			for(Vertex v:dominantSet){
-//				g.getVertix(name)
-//			}
+		}catch(Throwable t){
+			t.printStackTrace();
 		}
 	}
 	

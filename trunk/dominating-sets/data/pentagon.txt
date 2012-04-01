@@ -1,0 +1,17 @@
+aaa,bbb
+aba,bjb
+imk,aaa
+imk,aba
+bbb,bjb
+zzz,aaa
+zzz,bjb
+zzz,aba
+zzz,bbb
+zzz,imk
+CONFIGURATION
+aba,x=261,y=267
+aaa,x=179,y=51
+bjb,x=109,y=266
+zzz,x=177,y=166
+imk,x=293,y=127
+bbb,x=48,y=138
