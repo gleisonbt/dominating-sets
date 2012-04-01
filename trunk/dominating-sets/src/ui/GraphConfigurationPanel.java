@@ -1,7 +1,5 @@
 package ui;
 
-import graph.DominantSetFinder;
-import graph.DominantSetFinderType;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -15,7 +13,6 @@ import java.io.FileWriter;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;

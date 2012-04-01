@@ -3,11 +3,9 @@ package ui.graph.layout;
 import graph.Graph;
 import graph.Vertex;
 
-import java.awt.Dimension;
 import java.awt.Point;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 public abstract class AbstractGraphLayout implements GraphLayout {
 	private Graph graph;

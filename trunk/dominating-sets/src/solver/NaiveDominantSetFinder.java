@@ -1,4 +1,7 @@
-package graph;
+package solver;
+
+import graph.Graph;
+import graph.Vertex;
 
 import java.util.Arrays;
 import java.util.Collection;

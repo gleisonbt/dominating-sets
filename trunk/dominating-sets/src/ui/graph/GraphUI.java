@@ -14,7 +14,6 @@ import java.util.Map;
 
 import javax.swing.JPanel;
 
-import ui.graph.layout.CircularGraphLayout;
 import ui.graph.layout.GraphLayout;
 import ui.graph.layout.LayoutAdaptor;
 

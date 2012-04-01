@@ -1,7 +1,6 @@
 package layout;
 
 import java.awt.Graphics;
-import java.awt.Polygon;
 
 import javax.swing.JFrame;
 public class LayoutTest extends JFrame {
