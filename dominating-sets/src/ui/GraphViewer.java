@@ -13,6 +13,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileWriter;
+import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -31,9 +32,10 @@ public abstract class GraphViewer extends JFrame{
 	public abstract void onClosed();
 	private Class<? extends GraphLayout>selectedGraphLayout=AbstractGraphLayout.class;
 	private final GraphUI graphUI;
-	private final GraphInformation graphInfo;
+	private final GraphInformationPanel graphInfo;
 	private final GraphConfigurationPanel graphConf;
 	private final GraphLayoutSelectionPanel graphLayout;
+	private final DominantSetSolverSelectionPanel solverPanel;
 	private String savedConfiguraton;
 	public GraphViewer() {
 		super("Dominant set viewer");
@@ -73,31 +75,30 @@ public abstract class GraphViewer extends JFrame{
 				return selectedGraphLayout;
 			}
 		};
-		this.graphInfo = new GraphInformation();
+		this.graphInfo = new GraphInformationPanel();
 		
 		this.graphConf = new GraphConfigurationPanel() {
 			@Override
 			public void actionPerformed(ActionEvent ae) {
 				final String action = ((JButton)ae.getSource()).getText();
-				if(action.equals(GraphConfigurationPanel.RENDER_ACTION)){
-					process();
-				}else if(action.equals(GraphConfigurationPanel.FIND_DOMINANT_SET_ACTION)){
-					findDominantSet();
-				}else if(action.equals(GraphConfigurationPanel.SAVED_LAYOUT_ACTION)){
+				if(action.equals(GraphConfigurationAction.Render_Graph.toString())){
+					renderGraph();
+				}else if(action.equals(GraphConfigurationAction.Saved_layout.toString())){
 					relocateVerticies(savedConfiguraton);
 				}
 				super.actionPerformed(ae);
 			}
 			@Override
-			public void process() {
+			public void renderGraph() {
+				graphInfo.reset();
 				graphUI.setGraph(new Graph('u', getConfiguration()));
-				graphInfo.setVerteciesCount(""+graphUI.getGraph().getVertecies().length);
-				graphInfo.setEdgesCount(""+graphUI.getGraph().getEdges().length);
-				graphInfo.setConnected(""+graphUI.getGraph().isConnected());
+				graphInfo.setInfo(GraphData.Verticies,graphUI.getGraph().getVertecies().length);
+				graphInfo.setInfo(GraphData.Edges,graphUI.getGraph().getEdges().length);
+				graphInfo.setInfo(GraphData.isConnected,graphUI.getGraph().isConnected());
 			}
 			@Override
 			public void fileOpened(String configuration) {
-				process();
+				renderGraph();
 				setSavedConfiguraton(configuration);
 			}
 			@Override
@@ -122,8 +123,14 @@ public abstract class GraphViewer extends JFrame{
 				}
 			}
 		};
-		
+		solverPanel = new DominantSetSolverSelectionPanel() {		
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				findDominantSet();
+			}
+		};
 		panel3.add(graphInfo,BorderLayout.NORTH);
+		panel3.add(solverPanel,BorderLayout.CENTER);
 		this.panel2.add(panel3,BorderLayout.WEST);
 		this.panel2.add(graphUI,BorderLayout.CENTER);
 		this.panel1.add(graphConf,BorderLayout.CENTER);
@@ -132,7 +139,7 @@ public abstract class GraphViewer extends JFrame{
 		this.panel1.setMaximumSize(panel1.getPreferredSize());
 		this.getContentPane().add(panel1,BorderLayout.WEST);
 		this.getContentPane().add(panel2,BorderLayout.CENTER);
-		this.setPreferredSize(new Dimension(700,500));
+		this.setPreferredSize(new Dimension(800,550));
 		this.pack();
 	}
 	protected void relocateVerticies(String configuration) {
@@ -153,9 +160,14 @@ public abstract class GraphViewer extends JFrame{
 	}
 	protected void findDominantSet() {
 		try{
-			final DominantSetFinder ndsf = graphConf.getSelectedSolver().newInstance();
+			long t = new Date().getTime();
+			final DominantSetFinder ndsf = solverPanel.getSelectedSolver().newInstance();
 			ndsf.setGraph(graphUI.getGraph());
 			ndsf.findDominantSet();
+			t = new Date().getTime()-t;
+			graphInfo.setInfo(GraphData.Dominant,ndsf.getDominationNumber());
+			graphInfo.setInfo(GraphData.Iterations, ndsf.getIteratinos());
+			graphInfo.setInfo(GraphData.SolveTime,t+"ms");
 		}catch(Throwable t){
 			t.printStackTrace();
 		}

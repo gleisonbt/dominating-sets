@@ -22,7 +22,7 @@ public abstract class GraphLayoutSelectionPanel extends JPanel {
 		JPanel panel = new JPanel();
 		add(panel,BorderLayout.CENTER);
 		
-		panel.setBorder(BorderFactory.createEtchedBorder());
+		panel.setBorder(BorderFactory.createTitledBorder("Graph layout"));
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		ButtonGroup group = new ButtonGroup();
 		for(final GraphLayoutType layout:GraphLayoutType.values()){

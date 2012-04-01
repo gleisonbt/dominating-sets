@@ -8,7 +8,7 @@ import java.util.Set;
 public class NaiveDominantSetFinder implements DominantSetFinder {
 	private Graph g;
 	private Set<Vertex>dominantSet;
-	
+	private int iterations = 0;
 	@Override
 	public void setGraph(Graph g) {
 		this.g=g;
@@ -24,10 +24,10 @@ public class NaiveDominantSetFinder implements DominantSetFinder {
 		this.dominantSet.clear();
 		this.dominantSet.addAll(Arrays.asList(g.getVertecies()));
 		int size;
-		int i=1;
+		iterations=0;
 		do{
 			size = this.dominantSet.size();
-			System.out.printf("iteration [%d] dominantion factor : %d\n",i++,size);
+			//System.out.printf("iteration [%d] dominantion factor : %d\n",i++,size);
 			final Collection<Vertex>dominantSetCopy = new HashSet<Vertex>(dominantSet);
 			for(Vertex v:dominantSetCopy){
 				v.setDominant(false);
@@ -36,9 +36,14 @@ public class NaiveDominantSetFinder implements DominantSetFinder {
 					v.setDominant(true);
 					this.dominantSet.add(v);	
 				}
-				
+				iterations++;
 			}
 		}while(size!=this.dominantSet.size());
+	}
+	
+	@Override
+	public int getIteratinos() {
+		return iterations;
 	}
 	
 	@Override
