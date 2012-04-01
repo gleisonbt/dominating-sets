@@ -21,30 +21,20 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
 public abstract class GraphConfigurationPanel extends JPanel implements ActionListener{
-	public static final String RENDER_ACTION = "Render Graph";
-	public static final String FIND_DOMINANT_SET_ACTION = "Find dominant set";
-	public static final String SAVE_ACTION = "Save";
-	public static final String OPEN_ACTION = "Open";
-	public static final String SAVED_LAYOUT_ACTION = "Saved layout";
+
+	
 	public abstract void fileOpened(String positions);
 	public abstract void fileSaved(String fileName);
-	public abstract void process();
-	final JPanel panel0,panel1,panel2;
-	final JLabel label;
+	public abstract void renderGraph();
+	final JPanel panel0,panel1;
 	final JTextArea field;
-	final JButton button1,button2,button3,button4,button5;
-	private Class<? extends DominantSetFinder> selectedSolver;
+	final JButton button1,button3,button4,button5;
+
 	public GraphConfigurationPanel() {
 		super();
 		this.panel0=new JPanel();
 		this.panel1=new JPanel();
-		this.panel2=new DominantSetSolverSelectionPanel(){
-			@Override
-			public void dominantSetFinderChanged(
-					DominantSetFinderType dominantSetFinderType) {
-				setSelectedSolver(dominantSetFinderType.clazz());
-			}
-		};
+
 		this.setLayout(new BorderLayout(5,5));
 		this.panel0.setLayout(new BorderLayout(10,10));
 		
@@ -53,40 +43,51 @@ public abstract class GraphConfigurationPanel extends JPanel implements ActionLi
 		this.add(panel1,BorderLayout.CENTER);
 		this.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 		
-		label = new JLabel("Enter graph configuration:");
+		
 		field = new JTextArea();
 		field.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		field.setLineWrap(true);
-		field.setFont(label.getFont());
-		button1 = new JButton(RENDER_ACTION);
-		button2 = new JButton(FIND_DOMINANT_SET_ACTION);
-		button3 = new JButton(OPEN_ACTION);
-		button4 = new JButton(SAVE_ACTION);
-		button5 = new JButton(SAVED_LAYOUT_ACTION);
+		field.setFont(getFont());
+		button1 = new JButton(GraphConfigurationAction.Render_Graph.toString());
+		button3 = new JButton(GraphConfigurationAction.Open.toString());
+		button4 = new JButton(GraphConfigurationAction.Save.toString());
+		button5 = new JButton(GraphConfigurationAction.Saved_layout.toString());
 		button1.addActionListener(this);
-		button2.addActionListener(this);
+		
 		button3.addActionListener(this);
 		button4.addActionListener(this);
 		button5.addActionListener(this);
 		final JScrollPane spane = new JScrollPane(field,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		spane.setPreferredSize(new Dimension(0,100));
-		this.panel0.add(label,BorderLayout.NORTH);
-		this.panel0.add(spane,BorderLayout.CENTER);
-		this.panel0.add(panel2,BorderLayout.SOUTH);
+		
+		JPanel panel4 = new JPanel();
+		panel4.setLayout(new BorderLayout(1,1));
+		
+		JPanel spaneContainer = new JPanel();
+		spaneContainer.setLayout(new BorderLayout());
+		spaneContainer.add(spane,BorderLayout.CENTER);
+		panel4.add(spaneContainer,BorderLayout.CENTER);
+		spane.setBorder(BorderFactory.createEmptyBorder());
+		spaneContainer.setBorder(BorderFactory.createTitledBorder("Enter graph configuration:"));
+		
+		
 		this.panel1.add(button3);
 		this.panel1.add(button4);
 		
-		this.panel1.add(button1);
-		this.panel1.add(button5);
-		this.panel1.add(button2);
+		JPanel panel3 = new JPanel();
+		panel3.setLayout(new BorderLayout(1,1));
+		
+		panel3.add(button1,BorderLayout.NORTH);
+		panel3.add(button5,BorderLayout.SOUTH);
+		
+		
+		this.panel0.add(panel3,BorderLayout.NORTH);
+		this.panel0.add(panel4,BorderLayout.CENTER);
+		
+		
 		
 	}
-	public Class<? extends DominantSetFinder> getSelectedSolver() {
-		return selectedSolver;
-	}
-	private void setSelectedSolver(Class<? extends DominantSetFinder> dominantSetFinderType) {
-		this.selectedSolver = dominantSetFinderType;
-	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==button3){

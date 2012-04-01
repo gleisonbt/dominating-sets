@@ -9,4 +9,5 @@ public interface DominantSetFinder {
 	int getDominationNumber();
 	void setGraph(Graph graph);
 	void findDominantSet();
+	int getIteratinos();
 }
