@@ -30,27 +30,22 @@ public class ProbabilityDominantSetSolver extends AbstractDominantSetSolver {
 		int E = g.getEdges().length;
 		Vertex max;
 		do{
-			for(final Vertex v:V){
-				if(v.isVisited()){break;}
-				v.setConnectness(v.degree()*1.0/E);
-				incrementIterations();
-			}
 			max = V.get(0);
-			for(Vertex v:V){
-				if(v.getConnectness()>max.getConnectness()){
+			for(final Vertex v:V){
+				final double d = v.degree()*1.0/E;
+				final double m = max.getConnectness();
+				v.setConnectness(d);
+				if(d>m){
 					max=v;
 				}
 				incrementIterations();
 			}
+			
 			max.setDominant(true);
 			dominantSet.add(max);
-			E-=max.getEdges().length/2;
 			V.remove(max);
-			for(Vertex v:max.getNeighborVertecies()){
-				E-=v.getEdges().length/2;
-				V.remove(v);
-				incrementIterations();
-			}
+			V.removeAll(Arrays.asList(max.getNeighborVertecies()));
+
 		}while(!(V.isEmpty() ||  max==V.get(0)));
 		return dominantSet;
 	}
