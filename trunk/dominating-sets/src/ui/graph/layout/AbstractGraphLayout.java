@@ -23,7 +23,7 @@ public abstract class AbstractGraphLayout implements GraphLayout {
 		return graph;
 	}@Override
 	public Vertex[] getVertecies() {
-		return this.graph.getVerticies();
+		return this.graph.getVertecies();
 	}
 	@Override
 	public Point getVertexLocation(Vertex vertex) {

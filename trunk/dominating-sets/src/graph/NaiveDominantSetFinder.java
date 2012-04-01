@@ -18,11 +18,11 @@ public class NaiveDominantSetFinder implements DominantSetFinder {
 	@Override
 	public void findDominantSet(){
 		
-		for(Vertex v:g.getVerticies()){
+		for(Vertex v:g.getVertecies()){
 			v.setDominant(true);
 		}
 		this.dominantSet.clear();
-		this.dominantSet.addAll(Arrays.asList(g.getVerticies()));
+		this.dominantSet.addAll(Arrays.asList(g.getVertecies()));
 		int size;
 		int i=1;
 		do{

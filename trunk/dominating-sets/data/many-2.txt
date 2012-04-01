@@ -1,0 +1,15 @@
+a,b    j,y     b,r
+b,c    b,j     y,r
+a,c    d,b    o,r
+a,d    y,j     j,x
+c,d    o,x
+CONFIGURATION
+d,x=100,y=194
+b,x=242,y=211
+c,x=143,y=221
+a,x=115,y=256
+o,x=101,y=104
+j,x=284,y=94
+r,x=98,y=157
+y,x=222,y=134
+x,x=168,y=100

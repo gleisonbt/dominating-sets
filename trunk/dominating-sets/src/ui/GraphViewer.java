@@ -34,6 +34,7 @@ public abstract class GraphViewer extends JFrame{
 	private final GraphInformation graphInfo;
 	private final GraphConfigurationPanel graphConf;
 	private final GraphLayoutSelectionPanel graphLayout;
+	private String savedConfiguraton;
 	public GraphViewer() {
 		super("Dominant set viewer");
 		this.panel1=new JPanel();
@@ -82,20 +83,22 @@ public abstract class GraphViewer extends JFrame{
 					process();
 				}else if(action.equals(GraphConfigurationPanel.FIND_DOMINANT_SET_ACTION)){
 					findDominantSet();
+				}else if(action.equals(GraphConfigurationPanel.SAVED_LAYOUT_ACTION)){
+					relocateVerticies(savedConfiguraton);
 				}
 				super.actionPerformed(ae);
 			}
 			@Override
 			public void process() {
 				graphUI.setGraph(new Graph('u', getConfiguration()));
-				graphInfo.setVerteciesCount(""+graphUI.getGraph().getVerticies().length);
+				graphInfo.setVerteciesCount(""+graphUI.getGraph().getVertecies().length);
 				graphInfo.setEdgesCount(""+graphUI.getGraph().getEdges().length);
 				graphInfo.setConnected(""+graphUI.getGraph().isConnected());
 			}
 			@Override
 			public void fileOpened(String configuration) {
 				process();
-				relocateVerticies(configuration);
+				setSavedConfiguraton(configuration);
 			}
 			@Override
 			public void fileSaved(String fileName) {
@@ -157,6 +160,8 @@ public abstract class GraphViewer extends JFrame{
 			t.printStackTrace();
 		}
 	}
-	
+	public void setSavedConfiguraton(String savedConfiguraton) {
+		this.savedConfiguraton = savedConfiguraton;
+	}
 
 }

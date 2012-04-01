@@ -98,7 +98,7 @@ public abstract class GraphUI extends JPanel{
 		this.vertices.clear();
 		this.edges.clear();
 		this.removeAll();
-		for(final Vertex vertex:g.getVerticies()){
+		for(final Vertex vertex:g.getVertecies()){
 			final VertexUI vui = new VertexUI(vertex){
 				
 				@Override
@@ -134,7 +134,7 @@ public abstract class GraphUI extends JPanel{
 		}
 
 		this.g=g;
-		vs = g.getVerticies().length;
+		vs = g.getVertecies().length;
 		redraw();
 	}
 	public Graph getGraph() {
