@@ -14,8 +14,8 @@ import javax.swing.JRadioButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import solver.DominantSetFinder;
-import solver.DominantSetFinderType;
+import solver.DominantSetSolver;
+import solver.DominantSetSolverType;
 
 public abstract class DominantSetSolverSelectionPanel extends JPanel implements ActionListener{
 	
@@ -25,7 +25,7 @@ public abstract class DominantSetSolverSelectionPanel extends JPanel implements 
 		this.setBorder(BorderFactory.createTitledBorder("Dominant set solver"));
 		JPanel optionsPane = new JPanel(new GridLayout(0, 1,2,2));
 		ButtonGroup group = new ButtonGroup();
-		for(final DominantSetFinderType dominantSetFinderType:DominantSetFinderType.values()){
+		for(final DominantSetSolverType dominantSetFinderType:DominantSetSolverType.values()){
 			final JRadioButton rbutton = new JRadioButton(dominantSetFinderType.name());
 			group.add(rbutton);
 			rbutton.addChangeListener(new ChangeListener() {
@@ -55,8 +55,8 @@ public abstract class DominantSetSolverSelectionPanel extends JPanel implements 
 		add(buttonPane,BorderLayout.CENTER);
 		
 	}
-	private Class<? extends DominantSetFinder> selectedSolver;
-	public Class<? extends DominantSetFinder> getSelectedSolver() {
+	private Class<? extends DominantSetSolver> selectedSolver;
+	public Class<? extends DominantSetSolver> getSelectedSolver() {
 		return selectedSolver;
 	}
 }

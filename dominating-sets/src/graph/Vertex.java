@@ -11,6 +11,7 @@ public class Vertex {
 	private final Set<Edge>edges;
 	private boolean visited;
 	private boolean dominant;
+	private double connectness;
 	public Vertex(String name){
 		this.neighborVertices=new HashSet<Vertex>();
 		this.edges=new HashSet<Edge>();
@@ -33,6 +34,9 @@ public class Vertex {
 	}
 	public void addNeighborVertix(Vertex vertix){
 		this.neighborVertices.add(vertix);
+	}
+	public int degree(){
+		return this.edges.size();
 	}
 	public Vertex[]getNeighborDominantVertecies(){
 		final List<Vertex>list=new ArrayList<Vertex>();
@@ -62,5 +66,11 @@ public class Vertex {
 	}
 	public void setDominant(boolean dominant) {
 		this.dominant = dominant;
+	}
+	public double getConnectness() {
+		return connectness;
+	}
+	public void setConnectness(double connectness) {
+		this.connectness = connectness;
 	}
 }
