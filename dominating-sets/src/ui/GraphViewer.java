@@ -1,6 +1,5 @@
 package ui;
 
-import graph.DominantSetFinder;
 import graph.Graph;
 import graph.Vertex;
 
@@ -21,6 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import solver.DominantSetFinder;
 import ui.graph.GraphUI;
 import ui.graph.VertexUI;
 import ui.graph.layout.AbstractGraphLayout;

@@ -1,4 +1,7 @@
-package graph;
+package solver;
+
+import graph.Graph;
+import graph.Vertex;
 
 public interface DominantSetFinder {
 	Vertex[]getDominantSet();

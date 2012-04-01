@@ -1,23 +1,21 @@
 package ui;
 
-import graph.DominantSetFinder;
-import graph.DominantSetFinderType;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
-import javax.swing.JSeparator;
-import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
+import solver.DominantSetFinder;
+import solver.DominantSetFinderType;
 
 public abstract class DominantSetSolverSelectionPanel extends JPanel implements ActionListener{
 	
