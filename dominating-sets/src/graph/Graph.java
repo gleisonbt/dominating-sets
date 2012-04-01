@@ -91,7 +91,7 @@ public class Graph {
 	public Edge getEdge(String name){
 		return this.edges.get(name);
 	}
-	public Vertex[] getVerticies() {
+	public Vertex[] getVertecies() {
 		return verticies.values().toArray(new Vertex[verticies.size()]);
 	}
 	public Edge[] getEdges() {

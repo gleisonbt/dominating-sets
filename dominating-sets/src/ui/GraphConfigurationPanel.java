@@ -25,7 +25,7 @@ public abstract class GraphConfigurationPanel extends JPanel implements ActionLi
 	public static final String FIND_DOMINANT_SET_ACTION = "Find dominant set";
 	public static final String SAVE_ACTION = "Save";
 	public static final String OPEN_ACTION = "Open";
-	public static final String ROTATE_ACTION = "Rotate";
+	public static final String SAVED_LAYOUT_ACTION = "Saved layout";
 	public abstract void fileOpened(String positions);
 	public abstract void fileSaved(String fileName);
 	public abstract void process();
@@ -62,7 +62,7 @@ public abstract class GraphConfigurationPanel extends JPanel implements ActionLi
 		button2 = new JButton(FIND_DOMINANT_SET_ACTION);
 		button3 = new JButton(OPEN_ACTION);
 		button4 = new JButton(SAVE_ACTION);
-		button5 = new JButton(ROTATE_ACTION);
+		button5 = new JButton(SAVED_LAYOUT_ACTION);
 		button1.addActionListener(this);
 		button2.addActionListener(this);
 		button3.addActionListener(this);
@@ -77,10 +77,8 @@ public abstract class GraphConfigurationPanel extends JPanel implements ActionLi
 		this.panel1.add(button4);
 		
 		this.panel1.add(button1);
-		//this.panel1.add(button5);
+		this.panel1.add(button5);
 		this.panel1.add(button2);
-		
-		button5.setEnabled(false);
 		
 	}
 	public Class<? extends DominantSetFinder> getSelectedSolver() {
