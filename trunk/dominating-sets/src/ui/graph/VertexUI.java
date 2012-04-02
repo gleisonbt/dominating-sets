@@ -135,11 +135,12 @@ public abstract class VertexUI extends JComponent implements MouseMotionListener
 		final int fx = (int)(this.getSize().width-w)/2;
 		final int fy = (int)(this.getSize().height+h)/2;
 
-		graphics.setColor(!(vertex.isDominant() || vertex.isLinkedToDominantVertex())?Color.RED:(vertex.isDominant()?Color.GREEN:this.getVertexBackColor()));
-
+		graphics.setColor(vertex.isDominant()?Color.GREEN:this.getVertexBackColor());
+		
 		graphics.fillOval(x, y, d, d);
 		graphics.setColor(vertex.isDominant()?Color.BLUE:Color.black);
 		graphics.drawOval(x, y, d, d);
+		
 		graphics.drawString(name, fx, fy);
 
 	}

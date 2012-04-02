@@ -10,12 +10,11 @@ public class LayoutAdaptor {
 	public LayoutAdaptor(Graph graph,Dimension size,VertexUI[]vertecies,Class<? extends GraphLayout> graphLayout) {
 		
 		try {
-			GraphLayout layout = graphLayout.newInstance();
+			final GraphLayout layout = graphLayout.newInstance();
 			layout.setGraph(graph);
+			layout.setVertexUIs(vertecies);
 			layout.computeLayout(size);
-			for(VertexUI vui:vertecies){
-				vui.setLocation(layout.getVertexLocation(vui.getVertex()));
-			}
+			
 		} catch (InstantiationException e) {
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {

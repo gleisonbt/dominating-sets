@@ -3,27 +3,55 @@ package ui;
 import graph.Graph;
 import graph.GraphMetrics;
 
-import java.awt.GridLayout;
-import java.text.NumberFormat;
-import java.util.HashMap;
-import java.util.Map;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.util.EnumMap;
 
 import javax.swing.BorderFactory;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableColumnModel;
 
 public class GraphInformationPanel extends JPanel{
-	
-	
+	EnumMap<GraphMetrics,Object> data;
 	public GraphInformationPanel() {
-		super();
-		setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-		setLayout(new GridLayout(0, 2, 1, 1));
-		fields = new HashMap<GraphMetrics, JTextField>();
-		for(GraphMetrics gd:GraphMetrics.values()){
-			addField(gd,new JLabel(),new JTextField());
+		super(new BorderLayout(5,5));
+		//this.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+		data = new EnumMap<GraphMetrics,Object>(GraphMetrics.class);
+		for(final GraphMetrics gm:GraphMetrics.values()){
+			setInfo(gm, null);
 		}
+		JTable table = new JTable(new AbstractTableModel(){
+			@Override
+			public String getColumnName(int c) {
+				return new String[]{"Property","Value"}[c];
+			}
+			@Override
+			public int getColumnCount() {
+				return 2;
+			}
+			@Override
+			public int getRowCount() {
+				return data.size();
+			}
+			@Override
+			public Object getValueAt(int rowIndex, int columnIndex) {
+				if(columnIndex==0) return data.keySet().toArray()[rowIndex];
+				return data.values().toArray()[rowIndex];
+			}
+		});
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		table.getColumnModel().getColumn(0).setPreferredWidth(120);
+		table.setRowHeight(18);
+		//JScrollPane pane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		//pane.setPreferredSize(new Dimension(0,300));
+		JPanel tablepane = new JPanel(new BorderLayout());
+		tablepane.add(table,BorderLayout.CENTER);
+		tablepane.setBorder(BorderFactory.createTitledBorder("Graph properties"));
+		add(tablepane,BorderLayout.CENTER);
+		
 	}
 	
 	public void setInfo(final Graph g){
@@ -31,46 +59,14 @@ public class GraphInformationPanel extends JPanel{
 			setInfo(gm, g.getMetric(gm));
 		}
 	}
-	
+	public void setInfo(GraphMetrics gm,Object value){
+		data.put(gm, value);
+		invalidate();
+		validate();
+		revalidate();
+		repaint();
+	}
 	public void reset(){
-		for(JTextField field:fields.values()){field.setText("");}
-	}
-	
-	public void setInfo(GraphMetrics gd, Object value){
-		JTextField txt = fields.get(gd);
-		if(value==null){
-			txt.setText("");
-		}else{
-			final Class<?>type=gd.type();
-			
-			if(type==Integer.class || type==Double.class || type==Long.class){
-				try{
-					txt.setText(NumberFormat.getNumberInstance().format(value));
-				}catch(Exception r){
-					System.out.println(type.getName());
-					System.out.println(value.getClass().getName());
-					System.exit(0);
-				}					
-			}else if(type==Boolean.class){
-				txt.setText(((Boolean)value)?"yes":"no");
-			}else{
-				txt.setText(value+"");
-			}
-		}
-		
-	}
-	
-	public String getInfo(GraphMetrics gd){return fields.get(gd).getText();}
-	
-	private Map<GraphMetrics,JTextField>fields;
-	final void addField(GraphMetrics gd,JLabel label,JTextField field){
-		add(label);
-		label.setText(gd.name());
-		add(field);
-		if(field instanceof JTextField){
-			((JTextField)field).setEditable(false);
-		}
-		fields.put(gd, field);
-		field.setBackground(getBackground());
+		for(GraphMetrics gm:data.keySet()){data.put(gm, null);}
 	}
 }

@@ -1,6 +1,7 @@
 package graph;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,13 +13,19 @@ public class Vertex {
 	private boolean visited;
 	private boolean dominant;
 	private double connectness;
+	private int neighborPointer=0;
+	private Vertex[]neighbors;
+	
 	public Vertex(String name){
-		this.neighborVertices=new HashSet<Vertex>();
-		this.edges=new HashSet<Edge>();
+		this.neighborVertices=Collections.synchronizedSet(new HashSet<Vertex>());
+		this.edges=Collections.synchronizedSet(new HashSet<Edge>());
 		this.name=name;
 	}
 	public String getName() {
 		return name;
+	}
+	public boolean isNeighbor(Vertex vertex){
+		return this.neighborVertices.contains(vertex);
 	}
 	public void addEdge(Edge edge){
 		if(this.edges.contains(edge)){
@@ -30,10 +37,11 @@ public class Vertex {
 		return edges.toArray(new Edge[this.edges.size()]);
 	}
 	public Vertex[]getNeighborVertecies(){
-		return neighborVertices.toArray(new Vertex[this.neighborVertices.size()]);
+		return neighbors;
 	}
 	public void addNeighborVertix(Vertex vertix){
 		this.neighborVertices.add(vertix);
+		this.neighbors = neighborVertices.toArray(new Vertex[this.neighborVertices.size()]);
 	}
 	public int degree(){
 		return this.edges.size();
@@ -78,5 +86,13 @@ public class Vertex {
 	}
 	public void setDominant() {
 		this.setDominant(true);
+	}
+	public Vertex nextNeighbor(){
+		if(degree()==0) return null;
+		return this.neighbors[neighborPointer++%neighbors.length];
+	}
+	public boolean hasUnvisitedNeighbor(){
+		for(Vertex n:neighbors){if(!n.isVisited()){return true;}}
+		return false;
 	}
 }

@@ -2,8 +2,10 @@ package ui.graph;
 
 import graph.Edge;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import javax.swing.JComponent;
 
@@ -24,7 +26,10 @@ public class EdgeUI extends JComponent {
 	@Override
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		g.setColor(Color.MAGENTA);
+		//Graphics2D g = (Graphics2D)gr;
+//		g.setStroke(new BasicStroke(1, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND, 0,
+//		        new float[] { 3, 1 }, 2));
+		g.setColor(new Color(0x9999FF));
 		switch(edgeDirection){
 		case NWSE:
 			g.drawLine(0, 0, getSize().width, getSize().height);

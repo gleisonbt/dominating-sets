@@ -28,17 +28,14 @@ public abstract class GraphConfigurationPanel extends JPanel implements ActionLi
 	final JButton button1,button3,button4,button5;
 
 	public GraphConfigurationPanel() {
-		super();
+		super(new BorderLayout());
 		this.panel0=new JPanel();
 		this.panel1=new JPanel();
 
-		this.setLayout(new BorderLayout(5,5));
-		this.panel0.setLayout(new BorderLayout(10,10));
+		this.panel0.setLayout(new BorderLayout());
 		
 		this.panel1.setLayout(new FlowLayout(FlowLayout.LEFT,3,5));
-		this.add(panel0,BorderLayout.NORTH);
-		this.add(panel1,BorderLayout.CENTER);
-		this.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+		this.add(panel0,BorderLayout.CENTER);
 		
 		
 		field = new JTextArea();
@@ -56,9 +53,10 @@ public abstract class GraphConfigurationPanel extends JPanel implements ActionLi
 		button5.addActionListener(this);
 		final JScrollPane spane = new JScrollPane(field,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		spane.setPreferredSize(new Dimension(0,100));
+		spane.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
 		
 		JPanel panel4 = new JPanel();
-		panel4.setLayout(new BorderLayout(1,1));
+		panel4.setLayout(new BorderLayout());
 		
 		JPanel spaneContainer = new JPanel();
 		spaneContainer.setLayout(new BorderLayout());
@@ -71,8 +69,7 @@ public abstract class GraphConfigurationPanel extends JPanel implements ActionLi
 		this.panel1.add(button3);
 		this.panel1.add(button4);
 		
-		JPanel panel3 = new JPanel();
-		panel3.setLayout(new BorderLayout(1,1));
+		JPanel panel3 = new JPanel(new BorderLayout());
 		
 		panel3.add(button1,BorderLayout.NORTH);
 		panel3.add(button5,BorderLayout.SOUTH);
@@ -80,7 +77,7 @@ public abstract class GraphConfigurationPanel extends JPanel implements ActionLi
 		
 		this.panel0.add(panel3,BorderLayout.NORTH);
 		this.panel0.add(panel4,BorderLayout.CENTER);
-		
+		panel4.add(panel1,BorderLayout.NORTH);
 		
 		
 	}

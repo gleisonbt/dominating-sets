@@ -22,8 +22,9 @@ public abstract class DominantSetSolverSelectionPanel extends JPanel implements 
 	public DominantSetSolverSelectionPanel() {
 		super();
 		this.setLayout(new BorderLayout());
-		this.setBorder(BorderFactory.createTitledBorder("Dominant set solver"));
 		JPanel optionsPane = new JPanel(new GridLayout(0, 1,2,2));
+		optionsPane.setBorder(BorderFactory.createTitledBorder("Dominant set solver"));
+		
 		ButtonGroup group = new ButtonGroup();
 		for(final DominantSetSolverType dominantSetFinderType:DominantSetSolverType.values()){
 			final JRadioButton rbutton = new JRadioButton(dominantSetFinderType.name());
@@ -41,18 +42,14 @@ public abstract class DominantSetSolverSelectionPanel extends JPanel implements 
 		
 		group.getElements().nextElement().setSelected(true);
 		
-		JPanel buttonPane = new JPanel();
-		BoxLayout bl = new BoxLayout(buttonPane, BoxLayout.Y_AXIS);
-		
-		buttonPane.setLayout(bl);
 		
 		final JButton b = new JButton("Solve");
 		b.addActionListener(this);
-		buttonPane.add(b);
+		add(b,BorderLayout.SOUTH);
 		
 		add(optionsPane,BorderLayout.NORTH);
 
-		add(buttonPane,BorderLayout.CENTER);
+		
 		
 	}
 	private Class<? extends DominantSetSolver> selectedSolver;
