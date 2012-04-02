@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import solver.DominantSetSolver;
@@ -26,6 +27,7 @@ import ui.graph.GraphUI;
 import ui.graph.VertexUI;
 import ui.graph.layout.AbstractGraphLayout;
 import ui.graph.layout.GraphLayout;
+import ui.graph.layout.PlanarGraphLayout;
 import ui.text.MyEventQueue;
 
 public abstract class GraphViewer extends JFrame{
@@ -58,7 +60,7 @@ public abstract class GraphViewer extends JFrame{
 		panel3.setLayout(new BorderLayout());
 		this.graphLayout = new GraphLayoutSelectionPanel() {
 			@Override
-			void layoutChanged(Class<? extends GraphLayout> layout) {
+			public void layoutChanged(Class<? extends GraphLayout> layout) {
 				selectedGraphLayout = layout;
 			}
 		};
@@ -93,6 +95,11 @@ public abstract class GraphViewer extends JFrame{
 			public void renderGraph() {
 				graphInfo.reset();
 				final Graph g = new Graph('u', getConfiguration());
+				if(selectedGraphLayout==PlanarGraphLayout.class && !(Boolean)g.getMetric(GraphMetrics.isPlanar)){
+					JOptionPane.showMessageDialog(this, "This graph can not be visualized as planar because it has a vertex linked to more than five edges.");
+					//graphLayout.setFirst();
+					//return;
+				}
 				graphUI.setGraph(g);
 				graphInfo.setInfo(g);
 			}
@@ -129,8 +136,8 @@ public abstract class GraphViewer extends JFrame{
 				findDominantSet();
 			}
 		};
-		panel3.add(graphInfo,BorderLayout.NORTH);
-		panel3.add(solverPanel,BorderLayout.CENTER);
+		panel3.add(graphInfo,BorderLayout.CENTER);
+		panel3.add(solverPanel,BorderLayout.NORTH);
 		this.panel2.add(panel3,BorderLayout.WEST);
 		this.panel2.add(graphUI,BorderLayout.CENTER);
 		this.panel1.add(graphConf,BorderLayout.CENTER);
@@ -140,16 +147,18 @@ public abstract class GraphViewer extends JFrame{
 		this.getContentPane().add(panel1,BorderLayout.WEST);
 		this.getContentPane().add(panel2,BorderLayout.CENTER);
 		this.setPreferredSize(new Dimension(800,550));
+		panel3.setMaximumSize(new Dimension(200,0));
+		panel3.setPreferredSize(panel3.getMaximumSize());
 		this.pack();
 	}
 	protected void relocateVerticies(String configuration) {
-		System.out.println(configuration);
+		//System.out.println(configuration);
 		final Pattern pattern = Pattern.compile("(?:([^\\,]+)[,]x[=]([-]?[0-9]+)[,]y[=]([-]?[0-9]+)(?:(\\r|\\n){0,2}))");
 		final Matcher matcher = pattern.matcher(configuration);
 		while(matcher.find()){
-			System.out.println("Vertex : " + matcher.group(1));
-			System.out.println("X : " + matcher.group(2));
-			System.out.println("Y : " + matcher.group(3));
+//			System.out.println("Vertex : " + matcher.group(1));
+//			System.out.println("X : " + matcher.group(2));
+//			System.out.println("Y : " + matcher.group(3));
 			final VertexUI vertex = this.graphUI.getVertex(matcher.group(1));
 			final int x = Integer.valueOf(matcher.group(2));
 			final int y = Integer.valueOf(matcher.group(3));

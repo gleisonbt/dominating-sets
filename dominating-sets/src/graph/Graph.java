@@ -33,7 +33,8 @@ public class Graph {
 	public Graph(char name,String configuration) {
 		super();
 		this.metrics=new EnumMap<GraphMetrics, Object>(GraphMetrics.class);
-		
+		metrics.put(GraphMetrics.MinDegree, Integer.MAX_VALUE);
+		metrics.put(GraphMetrics.MaxDegree, Integer.MIN_VALUE);
 		this.configuration=configuration;
 		this.name=name;
 		this.edges=new HashMap<String, Edge>();
@@ -51,6 +52,11 @@ public class Graph {
 			edges.put(en, new Edge(en, v1, v2));
 			vertecies.put(vi, v1);
 			vertecies.put(vj, v2);
+			
+			metrics.put(GraphMetrics.MinDegree, Math.min(v1.degree(), (Integer)metrics.get(GraphMetrics.MinDegree)));
+			metrics.put(GraphMetrics.MaxDegree, Math.max(v1.degree(), (Integer)metrics.get(GraphMetrics.MaxDegree)));
+			metrics.put(GraphMetrics.MinDegree, Math.min(v2.degree(), (Integer)metrics.get(GraphMetrics.MinDegree)));
+			metrics.put(GraphMetrics.MaxDegree, Math.max(v2.degree(), (Integer)metrics.get(GraphMetrics.MaxDegree)));
 		}
 		this.updateMetrics();
 	}
@@ -64,14 +70,29 @@ public class Graph {
 		metrics.put(GraphMetrics.Verticies, V);
 		metrics.put(GraphMetrics.Density, density);
 		metrics.put(GraphMetrics.AverageDegree, averageDegree);
-		metrics.put(GraphMetrics.isConnected, isConnected());
+		boolean connected = isConnected();
+		metrics.put(GraphMetrics.isConnected, connected);
 		metrics.put(GraphMetrics.Connectivity, E/V);
 		metrics.put(GraphMetrics.Faces, 2+E-V);
-		metrics.put(GraphMetrics.isPlanar, Math.abs(averageDegree - (6*V-12)/V)<=1 );
+		// Euler's formula shows that for planar graph G=(V,E), |E| = 3 |V| - 6, so every planar graph contains a 
+		// linear number of edges, and further, every planar graph must contain a vertex of degree at most 5
+		metrics.put(GraphMetrics.isPlanar, ((Integer)metrics.get(GraphMetrics.MaxDegree))<6 );
+		
+		// from graph theory, a tree has to satisfy the formula |e| = |v| - 1
+		metrics.put(GraphMetrics.isTree, E==V-1); 
+		
 	}
 	
 	public char getName(){return name;}
 	public boolean isConnected(){
+		//if there is no vertices at all, the graph is empty and not connected
+		if(this.vertecies.isEmpty()){
+			return false;
+		}
+		//if there exist an orphan vertex, the graph is not connected
+		if(((Integer)metrics.get(GraphMetrics.MinDegree))==0){
+			return false;
+		}
 		//pick any vertex
 		Vertex vertex = this.vertecies.values().iterator().next();
 		//keep a set of the visited nodes so far

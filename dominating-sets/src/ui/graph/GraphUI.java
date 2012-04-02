@@ -28,7 +28,7 @@ public abstract class GraphUI extends JPanel{
 		this.vertices=new HashMap<String, VertexUI>();
 		this.edges=new HashMap<String, EdgeUI>();
 		this.setLayout(null);
-
+		this.setBackground(Color.WHITE);
 		this.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent arg0) {
@@ -86,7 +86,14 @@ public abstract class GraphUI extends JPanel{
 	}
 
 	private void redrawVerticies() {
-		new LayoutAdaptor(g, getSize(), getVertices(), getGraphLayout());
+		new Thread(){
+			public void run(){
+				new LayoutAdaptor(g, getSize(), getVertices(), getGraphLayout());	
+				System.out.println("finished");
+			}
+		}.start();
+		
+		
 	}
 
 	public void setVertexBackColor(Vertex vertex,Color color){

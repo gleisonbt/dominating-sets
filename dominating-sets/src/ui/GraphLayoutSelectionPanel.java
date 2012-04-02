@@ -14,17 +14,16 @@ import ui.graph.layout.GraphLayout;
 import ui.graph.layout.GraphLayoutType;
 
 public abstract class GraphLayoutSelectionPanel extends JPanel {
-	
+	private final ButtonGroup group;
 	public GraphLayoutSelectionPanel() {
 		super();
-		setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
 		setLayout(new BorderLayout());
 		JPanel panel = new JPanel();
 		add(panel,BorderLayout.CENTER);
-		
+		group = new ButtonGroup();
 		panel.setBorder(BorderFactory.createTitledBorder("Graph layout"));
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-		ButtonGroup group = new ButtonGroup();
+		
 		for(final GraphLayoutType layout:GraphLayoutType.values()){
 			final JRadioButton rb = new JRadioButton(layout.name());
 			rb.addChangeListener(new ChangeListener() {
@@ -40,5 +39,8 @@ public abstract class GraphLayoutSelectionPanel extends JPanel {
 		}
 		group.getElements().nextElement().setSelected(true);
 	}
-	abstract void layoutChanged(Class<? extends GraphLayout> layout);
+	public void setFirst(){
+		((JRadioButton)group.getElements().nextElement()).setSelected(true);
+	}
+	public abstract void layoutChanged(Class<? extends GraphLayout> layout);
 }
