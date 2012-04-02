@@ -4,13 +4,14 @@ import graph.Vertex;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.geom.Point2D;
 
 public class CircularGraphLayout extends AbstractGraphLayout implements GraphLayout {
 
 	int c = 1;
 	int i = 0;
 	double r = 100;
-	int xc,yc;
+	double xc,yc;
 	
 	@Override
 	public void computeLayout(Dimension plane) {
@@ -24,13 +25,13 @@ public class CircularGraphLayout extends AbstractGraphLayout implements GraphLay
 		}
 	}
 	@Override
-	public Point next(){
+	public Point2D.Double next(){
 		
-		final int x = (int) (xc + r * Math.cos(i * 2 * Math.PI/c));
-		final int y = (int) (yc + r * Math.sin(i * 2 * Math.PI/c));
+		final double x =  (xc + r * Math.cos(i * 2 * Math.PI/c));
+		final double y =  (yc + r * Math.sin(i * 2 * Math.PI/c));
 		
 		i=(i+1)%c;
-		return new Point(x,y);
+		return new Point2D.Double(x,y);
 	}
 
 }

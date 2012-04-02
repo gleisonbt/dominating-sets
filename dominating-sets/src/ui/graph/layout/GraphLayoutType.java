@@ -6,7 +6,7 @@ public enum GraphLayoutType {
 	Random   {public Class<? extends GraphLayout> clazz() {return RandomGridGraphLayout.class;}},
 	//Polygon  {public Class<? extends GraphLayout> clazz() {return PolygonGraphLayout.class;}},
 	Circular {public Class<? extends GraphLayout> clazz() {return CircularGraphLayout.class;}},
-	Planner  {public Class<? extends GraphLayout> clazz() {return PlannerGraphLayout.class;}},
+	Planar   {public Class<? extends GraphLayout> clazz() {return PlanarGraphLayout.class;}},
 	Maze     {public Class<? extends GraphLayout> clazz() {return MazeGraphLayout.class;}},
 	Star     {public Class<? extends GraphLayout> clazz() {return StarGraphLayout.class;}};
 	

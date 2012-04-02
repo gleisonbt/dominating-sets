@@ -1,6 +1,8 @@
 package graph;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -19,12 +21,19 @@ public class Graph {
 	private final Map<String,Vertex>vertecies;
 	private final char name;
 	private final String configuration;
+	private final EnumMap<GraphMetrics, Object>metrics;
+	private double density = -1.0d;
+	private double connectivity = -1.0d;
+	private double averageDegree = -1.0d;
 	/**
 	 * instantiate new graph with its data structure
 	 * @param name the name of the graph
 	 * @param configuration graph structure
 	 */
 	public Graph(char name,String configuration) {
+		super();
+		this.metrics=new EnumMap<GraphMetrics, Object>(GraphMetrics.class);
+		
 		this.configuration=configuration;
 		this.name=name;
 		this.edges=new HashMap<String, Edge>();
@@ -43,7 +52,24 @@ public class Graph {
 			vertecies.put(vi, v1);
 			vertecies.put(vj, v2);
 		}
+		this.updateMetrics();
 	}
+	
+	protected void updateMetrics(){
+		final double V = vertecies.size();
+		final double E = edges.size();
+		averageDegree = 2*E/V;
+		density = 2*E/(V*(V-1));
+		metrics.put(GraphMetrics.Edges, E);
+		metrics.put(GraphMetrics.Verticies, V);
+		metrics.put(GraphMetrics.Density, density);
+		metrics.put(GraphMetrics.AverageDegree, averageDegree);
+		metrics.put(GraphMetrics.isConnected, isConnected());
+		metrics.put(GraphMetrics.Connectivity, E/V);
+		metrics.put(GraphMetrics.Faces, 2+E-V);
+		metrics.put(GraphMetrics.isPlanar, Math.abs(averageDegree - (6*V-12)/V)<=1 );
+	}
+	
 	public char getName(){return name;}
 	public boolean isConnected(){
 		//pick any vertex
@@ -149,5 +175,8 @@ public class Graph {
 	}
 	public String getConfiguration() {
 		return configuration;
+	}
+	public Object getMetric(GraphMetrics metric){
+		return this.metrics.get(metric);
 	}
 }

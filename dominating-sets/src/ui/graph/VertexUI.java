@@ -11,12 +11,14 @@ import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
+import java.awt.geom.Point2D;
 
 import javax.swing.JComponent;
 
 public abstract class VertexUI extends JComponent implements MouseMotionListener,MouseListener{
 	private Vertex vertex;
 	private Color vertexBackColor = Color.white;
+	private double x,y;
 	public VertexUI(Vertex vertex){
 		super();
 		this.vertex=vertex;
@@ -25,8 +27,48 @@ public abstract class VertexUI extends JComponent implements MouseMotionListener
 		this.setFont(new Font(Font.SANS_SERIF,Font.PLAIN,12));
 		this.addMouseListener(this);
 		this.addMouseMotionListener(this);
+		x = super.getX();
+		y = super.getY();
 	}
 
+	public Point2D.Double getLocationDouble() {
+		return new Point2D.Double(x,y);
+	}
+	
+	
+	
+	@Override
+	public Point getLocation() {
+		return new Point((int)x,(int)y);
+	}
+	@Override
+	public int getX() {
+		return (int)x;
+	}
+	
+	@Override
+	public int getY() {
+		return (int)y;
+	}
+	
+	public void setLocation(Point2D.Double point) {
+		this.x = point.x;
+		this.y = point.y;
+		super.setLocation((int)x,(int)y);
+	}
+	@Override
+	public void setLocation(Point point) {
+		this.x = point.x;
+		this.y = point.y;
+		super.setLocation(point);
+	}
+	@Override
+	public void setLocation(int x, int y) {
+		this.x = x;
+		this.y = y;		
+		super.setLocation(x, y);
+	}
+	
 	@Override
 	public String getName() {
 		return vertex.getName();
@@ -38,6 +80,8 @@ public abstract class VertexUI extends JComponent implements MouseMotionListener
 		clicked();
 	}
 
+	
+	
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 
