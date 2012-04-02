@@ -4,6 +4,7 @@ import graph.Vertex;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.geom.Point2D;
 
 public class StarGraphLayout extends AbstractGraphLayout {
 	int c = 1;
@@ -23,12 +24,12 @@ public class StarGraphLayout extends AbstractGraphLayout {
 		}
 	}
 	@Override
-	public Point next(){
+	public Point2D.Double next(){
 		
 		final int x = (int) (xc + r*u * Math.cos(i * 2 * Math.PI/c));
 		final int y = (int) (yc + r*u * Math.sin(i * 2 * Math.PI/c));
 		u=1-(0.1*(i%8));
 		i=(i+1)%c;
-		return new Point(x,y);
+		return new Point2D.Double(x,y);
 	}
 }

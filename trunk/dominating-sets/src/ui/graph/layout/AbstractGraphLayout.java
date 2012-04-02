@@ -4,16 +4,18 @@ import graph.Graph;
 import graph.Vertex;
 
 import java.awt.Point;
+import java.awt.geom.Point2D;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public abstract class AbstractGraphLayout implements GraphLayout {
 	private Graph graph;
-	private Map<Vertex,Point>locations;
+	private Map<Vertex,Point2D.Double>locations;
 	
 	public AbstractGraphLayout() {
 		super();
-		this.locations=new HashMap<Vertex,Point>();
+		this.locations=new HashMap<Vertex,Point2D.Double>();
 	}
 	
 	@Override
@@ -24,7 +26,7 @@ public abstract class AbstractGraphLayout implements GraphLayout {
 		return this.graph.getVertecies();
 	}
 	@Override
-	public Point getVertexLocation(Vertex vertex) {
+	public Point2D.Double getVertexLocation(Vertex vertex) {
 		return this.locations.get(vertex);
 	}
 	
@@ -34,8 +36,8 @@ public abstract class AbstractGraphLayout implements GraphLayout {
 	}
 
 	@Override
-	public void setVertexLocation(Vertex vertex, Point location) {
-		locations.put(vertex, location);
+	public void setVertexLocation(Vertex vertex, Point2D.Double point) {
+		locations.put(vertex, point);
 	}
 
 }

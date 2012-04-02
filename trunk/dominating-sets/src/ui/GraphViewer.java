@@ -1,6 +1,7 @@
 package ui;
 
 import graph.Graph;
+import graph.GraphMetrics;
 import graph.Vertex;
 
 import java.awt.BorderLayout;
@@ -91,10 +92,9 @@ public abstract class GraphViewer extends JFrame{
 			@Override
 			public void renderGraph() {
 				graphInfo.reset();
-				graphUI.setGraph(new Graph('u', getConfiguration()));
-				graphInfo.setInfo(GraphData.Verticies,graphUI.getGraph().getVertecies().length);
-				graphInfo.setInfo(GraphData.Edges,graphUI.getGraph().getEdges().length);
-				graphInfo.setInfo(GraphData.isConnected,graphUI.getGraph().isConnected());
+				final Graph g = new Graph('u', getConfiguration());
+				graphUI.setGraph(g);
+				graphInfo.setInfo(g);
 			}
 			@Override
 			public void fileOpened(String configuration) {
@@ -163,10 +163,10 @@ public abstract class GraphViewer extends JFrame{
 			final DominantSetSolver ndsf = solverPanel.getSelectedSolver().newInstance();
 			ndsf.setGraph(graphUI.getGraph());
 			ndsf.solve();
-			graphInfo.setInfo(GraphData.Dominant,ndsf.getDominationNumber());
-			graphInfo.setInfo(GraphData.Iterations, ndsf.getIteratinos());
-			graphInfo.setInfo(GraphData.SolveTime,ndsf.getElapsedTime()+"ms");
-			graphInfo.setInfo(GraphData.isSolved, !graphUI.getGraph().hasVertexNotLinkedToDominantVertex());
+			graphInfo.setInfo(GraphMetrics.DominantVertices,ndsf.getDominationNumber());
+			graphInfo.setInfo(GraphMetrics.Iterations, ndsf.getIteratinos());
+			graphInfo.setInfo(GraphMetrics.SolveTime,ndsf.getElapsedTime());
+			graphInfo.setInfo(GraphMetrics.isSolved, !graphUI.getGraph().hasVertexNotLinkedToDominantVertex());
 		}catch(Throwable t){
 			t.printStackTrace();
 		}

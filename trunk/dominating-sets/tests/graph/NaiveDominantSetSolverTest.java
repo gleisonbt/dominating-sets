@@ -29,17 +29,18 @@ public class NaiveDominantSetSolverTest {
 
 	@Test
 	public void testGetDominantSet() {
-		String configuration =  "a,b 	j,y 	b,r"+
-								"b,c 	b,j 	y,r"+
-								"a,c 	d,b 	o,r"+
-								"a,d 	j,x		   "+
-								"c,d 	u,y 	u,j";
+		String configuration =  "a,b 	j,y 	b,r "+
+								"b,c 	b,j 	y,r "+
+								"a,c 	d,b 	o,r "+
+								"a,d 	j,x		    "+
+								"c,d 	u,y 	u,j ";
 		Graph g = new Graph('e', configuration);
 		NaiveDominantSetSolver ndsf = new NaiveDominantSetSolver();
 		ndsf.setGraph(g);
 		ndsf.solve();
 		Vertex[] ds = ndsf.getDominantSet();
 		assertEquals(3,ds.length);
+		//System.out.print(ds.length);
 	}
 
 	@Test

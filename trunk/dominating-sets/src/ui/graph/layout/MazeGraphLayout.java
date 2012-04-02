@@ -4,14 +4,15 @@ import graph.Vertex;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.geom.Point2D;
 
 public class MazeGraphLayout extends AbstractGraphLayout {
 
 	enum dir{
 		L,U,R,D
 	}
-	int x;
-	int y;
+	double x;
+	double y;
 	dir d = dir.L;
 	int i = 0;
 	int Cx;
@@ -33,7 +34,7 @@ public class MazeGraphLayout extends AbstractGraphLayout {
 		}
 	}
 	@Override
-	public Point next(){
+	public Point2D.Double next(){
 		switch(d){
 		case L:
 			x+=Cx;
@@ -54,6 +55,6 @@ public class MazeGraphLayout extends AbstractGraphLayout {
 			d=directions[n++%4];
 		}
 		i++;
-		return new Point(x,y);
+		return new Point2D.Double(x,y);
 	}
 }

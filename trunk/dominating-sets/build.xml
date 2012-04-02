@@ -1,0 +1,68 @@
+<project default="jnlp" basedir="." name="dominating-sets">
+  <property name="name"     value="${ant.project.name}"/>
+  <property name="version"  value="1.0"/>
+  <property name="src"      location="src"/>
+  <property name="bin"      location="bin"/>
+  <property name="lib"      location="lib"/>
+  <property name="manifest" value="jar/MANIFEST.mf"/>
+  <property name="jar"      value="jar/${name}-${version}.jar"/>
+  <property name="jnlp"     value="jnlp/${name}-${version}.jnlp"/>
+  <property name="debug"    value="on"/>
+  <property name="main-class" value="main.Main"/>
+  <!--
+    keytool -genkey -keystore hussainmutawastore -alias hussainmutawakey -storepass hussainmutawastorepass -keypass hussainmutawastorepass -dname "CN=Hussain Al-Mutawa, OU=Massey University-SEAT, O=Software Engineering, L=Palmerston North, S=Manawatu, C=NZ"
+  -->  
+
+  <property name="vendor"         value="Hussain Al-Mutawa"/>
+  <property name="vendor-address" value="CN=${vendor}, OU=Massey University-SEAT, O=Software Engineering, L=Palmerston North, S=Manawatu, C=NZ"/>  
+  
+  <path id="build.classpath">
+    <fileset dir="${lib}">
+      <include name="*.jar,**/*.jar"/>
+    </fileset>
+  </path>
+  
+  <target name="compile">
+    <javac destdir="${bin}" debug="${debug}" deprecation="on" optimize="off" srcdir="${src}" classpathref="build.classpath" includes="*.*"/>
+  </target>
+  
+  
+  <target name="jar" depends="compile">
+    <jar jarfile="${jar}" manifest="${manifest}" basedir="${bin}" excludes="test/**/*.*,*/**/*Test*.*" includes="*/**/*.*,**/*.*.*,*.*"/>
+  </target>
+
+
+
+	<target name="jnlp" depends="jar">
+
+		<echo file="${jnlp}"
+			message="
+			&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+			&lt;jnlp spec=&quot;1.0+&quot; codebase=&quot;http://www.hamte.com/~hussain/projects/${name}/&quot; href=&quot;${jnlp}&quot;&gt;
+			    &lt;information&gt;
+			        &lt;title&gt;${name}, ${vendor-address}&lt;/title&gt;
+			        &lt;vendor&gt;${vendor-address}&lt;/vendor&gt;
+			        &lt;homepage href=&quot;http://www.hamte.com/~hussain&quot;&gt;&lt;/homepage&gt;
+			        &lt;offline-allowed/&gt;
+			    &lt;/information&gt;
+           &lt;security&gt;
+            &lt;all-permissions/&gt;
+           &lt;/security&gt;			    
+			    &lt;resources&gt;
+			        &lt;!-- Application Resources --&gt;
+              &lt;j2se version=&quot;1.4.2+&quot; java-vm-args=&quot;-esa -Xnoclassgc&quot;/&gt;
+			        &lt;jar href=&quot;${jar}&quot; main=&quot;true&quot; /&gt;
+			    &lt;/resources&gt;
+			    &lt;application-desc
+			         name=&quot;${name}&quot;
+			         main-class=&quot;${main-class}&quot;
+			         width=&quot;700&quot;
+			         height=&quot;400&quot;&gt;
+			     &lt;/application-desc&gt;
+			     &lt;update check=&quot;background&quot;/&gt;
+			&lt;/jnlp&gt;
+			"/>
+			<echo>Build finished</echo>
+	</target>
+
+</project>

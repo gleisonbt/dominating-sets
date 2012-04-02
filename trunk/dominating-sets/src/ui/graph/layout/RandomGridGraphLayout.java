@@ -4,6 +4,7 @@ import graph.Vertex;
 
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.geom.Point2D;
 import java.util.Random;
 
 public class RandomGridGraphLayout extends AbstractGraphLayout {
@@ -23,16 +24,18 @@ public class RandomGridGraphLayout extends AbstractGraphLayout {
 			setVertexLocation(v, next());
 		}
 	}
-	public Point next(){
+	public Point2D.Double next(){
+		
 		final Random random = new Random();
 		boolean notempty = true;
-		int x=0,y=0; int counter=0;
+		int x=0,y=0; 
+		int counter=0;
 		while(notempty && counter++<100){
 			x = random.nextInt(grid.length);
 			y = random.nextInt(grid[0].length);
 			notempty = grid[x][y];
 		}
 		grid[x][y] = true;
-		return new Point(x*Cx,y*Cy);
+		return new Point2D.Double(x*Cx,y*Cy);
 	}
 }
