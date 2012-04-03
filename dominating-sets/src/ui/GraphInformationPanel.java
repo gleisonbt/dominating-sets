@@ -42,6 +42,7 @@ public class GraphInformationPanel extends JPanel{
 				return data.values().toArray()[rowIndex];
 			}
 		});
+		table.setShowGrid(false);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table.getColumnModel().getColumn(0).setPreferredWidth(120);
 		table.setRowHeight(18);

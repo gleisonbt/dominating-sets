@@ -3,10 +3,10 @@ package ui.graph.layout;
 import graph.Vertex;
 
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.geom.Point2D;
+import java.util.List;
 
-public class CircularGraphLayout extends AbstractGraphLayout implements GraphLayout {
+public class CircularGraphLayout extends AbstractGraphLayout{
 
 	int c = 1;
 	int i = 0;
@@ -18,10 +18,10 @@ public class CircularGraphLayout extends AbstractGraphLayout implements GraphLay
 		xc = plane.width  /2;
 		yc = plane.height /2;
 		r  = Math.sqrt(xc*xc+yc*yc)/2;
-		Vertex[]vertices = getVertecies();
-		c = vertices.length;
-		for(Vertex v:vertices){
-			setVertexLocation(v, next());
+		List vertices = getGraph().getVertecies();
+		c = vertices.size();
+		for(Object v:vertices){
+			setVertexLocation((Vertex)v, next());
 		}
 	}
 	@Override

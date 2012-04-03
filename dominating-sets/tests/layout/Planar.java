@@ -89,7 +89,7 @@ public class Planar extends JFrame{
 			}
 		}
 		boolean done=false;
-		Vertex v = graph.getVertecies()[0];
+		Vertex v = (Vertex) graph.getVertecies().get(0);
 		
 			Point2D.Double p=null;
 			for(Intersection i:intersections.keySet()){

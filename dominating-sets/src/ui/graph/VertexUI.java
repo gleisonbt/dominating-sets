@@ -1,5 +1,6 @@
 package ui.graph;
 
+import graph.Locateable;
 import graph.Vertex;
 
 import java.awt.Color;
@@ -14,15 +15,17 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 
 import javax.swing.JComponent;
+import javax.swing.JPanel;
 
-public abstract class VertexUI extends JComponent implements MouseMotionListener,MouseListener{
-	private Vertex vertex;
+public abstract class VertexUI extends JComponent implements MouseMotionListener,MouseListener,Locateable{
+	private Vertex<EdgeUI,VertexUI> vertex;
 	private Color vertexBackColor = Color.white;
 	private double x,y;
-	public VertexUI(Vertex vertex){
+	public VertexUI(Vertex<EdgeUI,VertexUI> vertex){
 		super();
 		this.vertex=vertex;
-
+		//this.vertex.setViewableObject(this);
+		
 		//this.setOpaque(true);
 		this.setFont(new Font(Font.SANS_SERIF,Font.PLAIN,12));
 		this.addMouseListener(this);
@@ -34,8 +37,6 @@ public abstract class VertexUI extends JComponent implements MouseMotionListener
 	public Point2D.Double getLocationDouble() {
 		return new Point2D.Double(x,y);
 	}
-	
-	
 	
 	@Override
 	public Point getLocation() {
@@ -153,7 +154,7 @@ public abstract class VertexUI extends JComponent implements MouseMotionListener
 		return this.vertexBackColor;
 	}
 
-	public Vertex getVertex() {
+	public Vertex<EdgeUI,VertexUI> getVertex() {
 		return vertex;
 	}
 

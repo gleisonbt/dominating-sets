@@ -10,10 +10,11 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileWriter;
-import java.util.Date;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -23,6 +24,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import solver.DominantSetSolver;
+import ui.graph.EdgeUI;
 import ui.graph.GraphUI;
 import ui.graph.VertexUI;
 import ui.graph.layout.AbstractGraphLayout;
@@ -68,8 +70,8 @@ public abstract class GraphViewer extends JFrame{
 		this.graphUI = new GraphUI(){
 			public void vertexClicked(Vertex vertex) {
 				resetAllVerticesBackColor();
-				Vertex[]neighbours = vertex.getNeighborVertecies();
-				for(Vertex v:neighbours){
+				List<Vertex<EdgeUI,VertexUI>>neighbours = vertex.getNeighborVertecies();
+				for(Vertex<EdgeUI,VertexUI> v:neighbours){
 					graphUI.setVertexBackColor(v, Color.yellow);
 				}
 				
@@ -113,10 +115,10 @@ public abstract class GraphViewer extends JFrame{
 				try{
 					final StringBuffer sb = new StringBuffer();
 					sb.append("\nCONFIGURATION\n");
-					VertexUI[]verticies=graphUI.getVertices();
-					if(verticies.length>0){
-						for(final VertexUI vertex:verticies){
-							sb.append(vertex.getName()+",x="+vertex.getX()+",y="+vertex.getY()+"\n");
+					List<Vertex<EdgeUI,VertexUI>> verticies = graphUI.getGraph().getVertecies();
+					if(verticies.size()>0){
+						for(final Vertex<EdgeUI,VertexUI> vertex:verticies){
+							sb.append(vertex.getName()+",x="+vertex.getViewableObject().getX()+",y="+vertex.getViewableObject().getY()+"\n");
 						}
 						sb.setLength(sb.length()-1);
 					}
@@ -138,6 +140,30 @@ public abstract class GraphViewer extends JFrame{
 		};
 		panel3.add(graphInfo,BorderLayout.CENTER);
 		panel3.add(solverPanel,BorderLayout.NORTH);
+		
+		/*
+		 * this shoudld be removed
+		 */
+		
+		JButton bremove = new JButton("Remove");
+		bremove.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent ae) {
+				final Graph g = graphUI.getGraph();
+				System.out.println(g.getVertecies().size() + " : " + g.getEdges().size());
+				Object o = g.getVertecies().get(0);
+				Vertex v = (Vertex<?,?>)o;
+				graphUI.removeVertex(v);
+				//System.out.println(g.removeVertex(v));
+				System.out.println(g.getVertecies().size() + " : " + g.getEdges().size());
+				graphUI.redraw();
+			}
+		});
+		panel3.add(bremove,BorderLayout.SOUTH);
+		/*
+		 * rmove the code which comes before this comment
+		 */
+		
 		this.panel2.add(panel3,BorderLayout.WEST);
 		this.panel2.add(graphUI,BorderLayout.CENTER);
 		this.panel1.add(graphConf,BorderLayout.CENTER);
@@ -159,7 +185,7 @@ public abstract class GraphViewer extends JFrame{
 //			System.out.println("Vertex : " + matcher.group(1));
 //			System.out.println("X : " + matcher.group(2));
 //			System.out.println("Y : " + matcher.group(3));
-			final VertexUI vertex = this.graphUI.getVertex(matcher.group(1));
+			final VertexUI vertex = this.graphUI.getVertexUI(matcher.group(1));
 			final int x = Integer.valueOf(matcher.group(2));
 			final int y = Integer.valueOf(matcher.group(3));
 			final Point point = new Point(x,y);

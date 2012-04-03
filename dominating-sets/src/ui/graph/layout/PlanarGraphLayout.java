@@ -4,10 +4,10 @@ import graph.GraphMetrics;
 import graph.Vertex;
 
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 /**
@@ -41,35 +41,35 @@ public class PlanarGraphLayout extends AbstractGraphLayout{
 	}
 	@Override
 	public void computeLayout(Dimension plane) {
-		final Vertex[]	  V = getVertecies();
-		final Set<Vertex> U = new HashSet<Vertex>();
-		final Set<Vertex> W = new HashSet<Vertex>();
+		final List<?> V = getGraph().getVertecies();
+		final Set<Vertex>  U = new HashSet<Vertex>();
+		final Set<Vertex>  W = new HashSet<Vertex>();
 		//final double beta   = (Double)getGraph().getMetric(GraphMetrics.AverageDegree); 
 		int xc = plane.width  /2;
 		int yc = plane.height /2;
 		this.forces=new HashMap<Vertex,Double>();
 		int maxd = (Integer)getGraph().getMetric(GraphMetrics.MaxDegree);
-		for(final Vertex v:V){
-			forces.put(v, 0.0);		// relax all of the forces
+		for(final Object v:V){
+			forces.put((Vertex)v, 0.0);		// relax all of the forces
 			
-			if(v.degree()<maxd){	// those with degree above the average are face up 
-				U.add(v);
-				setVertexLocation(v, new Point2D.Double(xc,yc));
+			if(((Vertex)v).degree()<maxd){	// those with degree above the average are face up 
+				U.add((Vertex)v);
+				setVertexLocation((Vertex)v, new Point2D.Double(xc,yc));
 			}else{					// below average degree are face down
-				W.add(v);
+				W.add((Vertex)v);
 			}
 		}
 		
 		if(U.size()==0){
-			U.add(V[0]);
-			W.remove(V[0]);
+			U.add((Vertex)V.get(0));
+			W.remove(V.get(0));
 		}
 		
 		//final Random r = new Random();
 		int i=0;
 		
 		double r  = Math.sqrt(xc*xc+yc*yc)/2;
-		n = getVertecies().length;
+		n = V.size();
 		
 		for(Vertex w: W){
 			final int x = (int) (xc + r * Math.cos(i * 2 * Math.PI/W.size()));
@@ -85,9 +85,11 @@ public class PlanarGraphLayout extends AbstractGraphLayout{
 		
 		int iterations = 5;
 		for(i=0;i<iterations;i++){
-			for(Vertex v: V){
+			for(Object o: V){
+				Vertex v = (Vertex)o;
 				forces.put(v, 0.0);
-				for(Vertex u:v.getNeighborVertecies()){
+				List<Vertex>N=v.getNeighborVertecies();
+				for(Vertex u:N){
 					double Fuv = force(v,u);
 					forces.put(u, forces.get(u)+Fuv);
 					forces.put(v, forces.get(v)-Fuv);
@@ -95,7 +97,7 @@ public class PlanarGraphLayout extends AbstractGraphLayout{
 				double Fv = forces.get(v);
 				for(Vertex m: U){
 					if(m!=v){
-						final Point2D.Double mpos = getVertexLocation(m);
+						final Point2D.Double mpos = m.getViewableObject().getLocationDouble();
 //						final Point2D.Double vpos = getVertexLocation(v);
 						final double p = (Math.min(Math.abs(Fv), cool(i))*Fv/Math.abs(Fv));
 						final double x1 = mpos.x;
@@ -126,7 +128,7 @@ public class PlanarGraphLayout extends AbstractGraphLayout{
 	}
 	
 	double force(Vertex v,Vertex u){
-		final double d = delta(getVertexLocation(v), getVertexLocation(u));
+		final double d = delta(v.getViewableObject().getLocationDouble(), u.getViewableObject().getLocationDouble());
 		return C*Math.pow(d, 3);
 	}
 }

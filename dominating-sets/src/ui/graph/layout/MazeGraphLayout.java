@@ -3,7 +3,6 @@ package ui.graph.layout;
 import graph.Vertex;
 
 import java.awt.Dimension;
-import java.awt.Point;
 import java.awt.geom.Point2D;
 
 public class MazeGraphLayout extends AbstractGraphLayout {
@@ -23,13 +22,12 @@ public class MazeGraphLayout extends AbstractGraphLayout {
 	dir[] directions = dir.values();
 	@Override
 	public void computeLayout(Dimension plane) {
-		Vertex[]vertices = getVertecies();
 		x = plane.width/3;
 		y = plane.height/2;
 		Cx = (int) Math.sqrt(Math.PI*x+y);
 		Cy = (int) Math.sqrt(Math.PI*y+x);
 		
-		for(Vertex v:vertices){
+		for(Vertex v:getGraph().getVertecies()){
 			setVertexLocation(v, next());
 		}
 	}
