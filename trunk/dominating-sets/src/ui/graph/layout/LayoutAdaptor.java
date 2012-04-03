@@ -4,11 +4,8 @@ import graph.Graph;
 
 import java.awt.Dimension;
 
-import ui.graph.EdgeUI;
-import ui.graph.VertexUI;
-
 public class LayoutAdaptor {
-	public LayoutAdaptor(Graph<EdgeUI,VertexUI> graph,Dimension size,Class<? extends GraphLayout> graphLayout) {
+	public LayoutAdaptor(Graph graph,Dimension size,Class<? extends GraphLayout> graphLayout) {
 		
 		try {
 			final GraphLayout layout = graphLayout.newInstance();

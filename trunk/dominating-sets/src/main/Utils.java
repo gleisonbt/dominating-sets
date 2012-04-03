@@ -1,8 +1,10 @@
 package main;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 /**
  * declarative utilties
  * @author Hussain Al-Mutawa
@@ -23,6 +25,10 @@ public class Utils {
 		for (int index=0;it.hasNext();++index) {
 			mapFunction.map(index,it.next());
 		}
+	}
+	
+	public static<T> List<T> asList(T[]t){
+		return new ArrayList<T>(Arrays.asList(t));
 	}
 
 }

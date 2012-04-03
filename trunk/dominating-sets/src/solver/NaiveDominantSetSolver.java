@@ -3,6 +3,7 @@ package solver;
 import graph.Graph;
 import graph.Vertex;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -20,9 +21,9 @@ import java.util.Set;
 public class NaiveDominantSetSolver extends AbstractDominantSetSolver {
 
 	@Override
-	protected Set<Vertex<?,?>> findDominantSet(){
+	protected Set<Vertex> findDominantSet(){
 		final Graph g = getGraph();
-		final Set<Vertex<?,?>>dominantSet = new HashSet<Vertex<?,?>>(g.getVertecies());
+		final Set<Vertex>dominantSet = new HashSet<Vertex>(Arrays.asList(g.getVertecies()));
 
 		int size;
 		
@@ -36,7 +37,7 @@ public class NaiveDominantSetSolver extends AbstractDominantSetSolver {
 					v.setDominant(true);
 					dominantSet.add(v);	
 				}else{
-					List<Vertex>N=v.getNeighborVertecies();
+					Vertex[]N=v.getNeighborVertecies();
 					for(Vertex u:N){
 						if(!(u.isDominant() || u.isLinkedToDominantVertex())){
 							v.setDominant(true);

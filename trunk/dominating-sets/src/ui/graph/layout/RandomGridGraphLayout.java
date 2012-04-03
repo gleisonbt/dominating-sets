@@ -1,11 +1,9 @@
 package ui.graph.layout;
 
-import graph.Locateable;
 import graph.Vertex;
 
 import java.awt.Dimension;
 import java.awt.geom.Point2D;
-import java.util.List;
 import java.util.Random;
 
 public class RandomGridGraphLayout extends AbstractGraphLayout{
@@ -13,8 +11,8 @@ public class RandomGridGraphLayout extends AbstractGraphLayout{
 	int Cx = 15,Cy = 15;
 	@Override
 	public void computeLayout(Dimension plane) {
-		final List<?>V=getGraph().getVertecies();
-		final int vs = (int) (Math.sqrt( V.size() ));
+		final Vertex[]V=getGraph().getVertecies();
+		final int vs = (int) (Math.sqrt( V.length ));
 		final int xs = plane.width/vs;
 		final int ys = plane.height/vs;
 		
@@ -22,8 +20,8 @@ public class RandomGridGraphLayout extends AbstractGraphLayout{
 		Cy = (int)(Math.sqrt(Math.PI*(ys*ys)/4));
 		
 		grid = new boolean[vs+1][vs+1];
-		for(Object v:V){
-			setVertexLocation((Vertex)v, next());
+		for(Vertex v:V){
+			setVertexLocation(v, next());
 		}
 	}
 	public Point2D.Double next(){

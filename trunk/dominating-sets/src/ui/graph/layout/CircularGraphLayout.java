@@ -1,10 +1,9 @@
 package ui.graph.layout;
 
-import graph.Vertex;
-
 import java.awt.Dimension;
 import java.awt.geom.Point2D;
-import java.util.List;
+
+import graph.Vertex;
 
 public class CircularGraphLayout extends AbstractGraphLayout{
 
@@ -18,10 +17,10 @@ public class CircularGraphLayout extends AbstractGraphLayout{
 		xc = plane.width  /2;
 		yc = plane.height /2;
 		r  = Math.sqrt(xc*xc+yc*yc)/2;
-		List vertices = getGraph().getVertecies();
-		c = vertices.size();
-		for(Object v:vertices){
-			setVertexLocation((Vertex)v, next());
+		Vertex[] vertices = getGraph().getVertecies();
+		c = vertices.length;
+		for(Vertex v:vertices){
+			setVertexLocation(v, next());
 		}
 	}
 	@Override

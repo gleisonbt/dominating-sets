@@ -1,5 +1,6 @@
 package ui.graph;
 
+
 import graph.Locateable;
 
 import java.awt.Color;
@@ -79,6 +80,10 @@ public class EdgeUI extends JComponent implements Locateable{
 	public void setLocation(Double point) {
 		this.setLocation((int)point.x, (int)point.y);
 	}
-	
+
+	@Override
+	public void setBackColor(Color color) {
+		//
+	}	
 	
 }

@@ -14,7 +14,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileWriter;
-import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -24,7 +23,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import solver.DominantSetSolver;
-import ui.graph.EdgeUI;
 import ui.graph.GraphUI;
 import ui.graph.VertexUI;
 import ui.graph.layout.AbstractGraphLayout;
@@ -47,7 +45,7 @@ public abstract class GraphViewer extends JFrame{
 		this.panel1=new JPanel();
 		this.panel2=new JPanel();
 		Toolkit.getDefaultToolkit().getSystemEventQueue().push(new MyEventQueue()); 
-		this.getContentPane().setLayout(new BorderLayout());
+		this.getContentPane().setLayout(new BorderLayout(5,5));
 		this.setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		this.addWindowListener(new WindowAdapter() {
 			@Override
@@ -70,8 +68,8 @@ public abstract class GraphViewer extends JFrame{
 		this.graphUI = new GraphUI(){
 			public void vertexClicked(Vertex vertex) {
 				resetAllVerticesBackColor();
-				List<Vertex<EdgeUI,VertexUI>>neighbours = vertex.getNeighborVertecies();
-				for(Vertex<EdgeUI,VertexUI> v:neighbours){
+				Vertex[]neighbours = vertex.getNeighborVertecies();
+				for(Vertex v:neighbours){
 					graphUI.setVertexBackColor(v, Color.yellow);
 				}
 				
@@ -95,15 +93,14 @@ public abstract class GraphViewer extends JFrame{
 			}
 			@Override
 			public void renderGraph() {
-				graphInfo.reset();
-				final Graph g = new Graph('u', getConfiguration());
-				if(selectedGraphLayout==PlanarGraphLayout.class && !(Boolean)g.getMetric(GraphMetrics.isPlanar)){
-					JOptionPane.showMessageDialog(this, "This graph can not be visualized as planar because it has a vertex linked to more than five edges.");
-					//graphLayout.setFirst();
-					//return;
-				}
+				final Graph g = new Graph('u', getConfiguration(),true);
+//				if(selectedGraphLayout==PlanarGraphLayout.class && !(Boolean)g.getMetric(GraphMetrics.isPlanar)){
+//					JOptionPane.showMessageDialog(this, "This graph can not be visualized as planar because it has a vertex linked to more than five edges.");
+//					//graphLayout.setFirst();
+//					//return;
+//				}
 				graphUI.setGraph(g);
-				graphInfo.setInfo(g);
+				graphInfo.setGraph(g);
 			}
 			@Override
 			public void fileOpened(String configuration) {
@@ -115,9 +112,9 @@ public abstract class GraphViewer extends JFrame{
 				try{
 					final StringBuffer sb = new StringBuffer();
 					sb.append("\nCONFIGURATION\n");
-					List<Vertex<EdgeUI,VertexUI>> verticies = graphUI.getGraph().getVertecies();
-					if(verticies.size()>0){
-						for(final Vertex<EdgeUI,VertexUI> vertex:verticies){
+					Vertex[] verticies = graphUI.getGraph().getVertecies();
+					if(verticies.length>0){
+						for(final Vertex vertex:verticies){
 							sb.append(vertex.getName()+",x="+vertex.getViewableObject().getX()+",y="+vertex.getViewableObject().getY()+"\n");
 						}
 						sb.setLength(sb.length()-1);
@@ -144,22 +141,32 @@ public abstract class GraphViewer extends JFrame{
 		/*
 		 * this shoudld be removed
 		 */
-		
-		JButton bremove = new JButton("Remove");
-		bremove.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent ae) {
-				final Graph g = graphUI.getGraph();
-				System.out.println(g.getVertecies().size() + " : " + g.getEdges().size());
-				Object o = g.getVertecies().get(0);
-				Vertex v = (Vertex<?,?>)o;
-				graphUI.removeVertex(v);
-				//System.out.println(g.removeVertex(v));
-				System.out.println(g.getVertecies().size() + " : " + g.getEdges().size());
-				graphUI.redraw();
-			}
-		});
-		panel3.add(bremove,BorderLayout.SOUTH);
+//		JButton bremove = new JButton("Remove any vertex");
+//		bremove.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent ae) {
+//				final Graph g = graphUI.getGraph();
+//				System.out.println(g.getVertecies().length + " : " + g.getEdges().length);
+//				Vertex v = null;
+//				Vertex[] V = g.getVertecies();
+//				for(Vertex u : V){
+//					final boolean cut = g.isCutVertex(u, V);
+//					if(!cut){
+//						v = u;
+//						break;
+//					}
+//				}
+//				
+//				if(v==null)throw new RuntimeException(V.length+"");
+//				graphUI.removeVertex(v);
+//				//System.out.println(g.removeVertex(v));
+//				System.out.println(g.getVertecies().length + " : " + g.getEdges().length);
+//				graphUI.redraw();
+//				graphUI.getGraph().updateMetrics();
+//				graphInfo.refresh();
+//			}
+//		});
+//		panel3.add(bremove,BorderLayout.SOUTH);
 		/*
 		 * rmove the code which comes before this comment
 		 */
@@ -177,14 +184,14 @@ public abstract class GraphViewer extends JFrame{
 		panel3.setPreferredSize(panel3.getMaximumSize());
 		this.pack();
 	}
+	
+
+	
 	protected void relocateVerticies(String configuration) {
 		//System.out.println(configuration);
 		final Pattern pattern = Pattern.compile("(?:([^\\,]+)[,]x[=]([-]?[0-9]+)[,]y[=]([-]?[0-9]+)(?:(\\r|\\n){0,2}))");
 		final Matcher matcher = pattern.matcher(configuration);
 		while(matcher.find()){
-//			System.out.println("Vertex : " + matcher.group(1));
-//			System.out.println("X : " + matcher.group(2));
-//			System.out.println("Y : " + matcher.group(3));
 			final VertexUI vertex = this.graphUI.getVertexUI(matcher.group(1));
 			final int x = Integer.valueOf(matcher.group(2));
 			final int y = Integer.valueOf(matcher.group(3));
@@ -198,10 +205,12 @@ public abstract class GraphViewer extends JFrame{
 			final DominantSetSolver ndsf = solverPanel.getSelectedSolver().newInstance();
 			ndsf.setGraph(graphUI.getGraph());
 			ndsf.solve();
-			graphInfo.setInfo(GraphMetrics.DominantVertices,ndsf.getDominationNumber());
-			graphInfo.setInfo(GraphMetrics.Iterations, ndsf.getIteratinos());
-			graphInfo.setInfo(GraphMetrics.SolveTime,ndsf.getElapsedTime());
-			graphInfo.setInfo(GraphMetrics.isSolved, !graphUI.getGraph().hasVertexNotLinkedToDominantVertex());
+			final Graph g = graphUI.getGraph();
+			g.setMetric(GraphMetrics.DominantVertices,ndsf.getDominationNumber());
+			g.setMetric(GraphMetrics.Iterations, ndsf.getIteratinos());
+			g.setMetric(GraphMetrics.SolveTime,ndsf.getElapsedTime());
+			g.setMetric(GraphMetrics.isSolved, !graphUI.getGraph().hasVertexNotLinkedToDominantVertex());
+			graphInfo.refresh();
 		}catch(Throwable t){
 			t.printStackTrace();
 		}

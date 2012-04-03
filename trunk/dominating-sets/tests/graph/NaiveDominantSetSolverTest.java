@@ -11,7 +11,7 @@ public class NaiveDominantSetSolverTest {
 
 	@Test
 	public void testNaiveDominantSetSolver() {
-		Graph g = new Graph('e', "a,b");
+		Graph g = new Graph('e', "a,b",false);
 		DominantSetSolver solver = new NaiveDominantSetSolver();
 		solver.setGraph(g);
 		assertEquals(0,solver.getDominantSet().length);
@@ -19,7 +19,7 @@ public class NaiveDominantSetSolverTest {
 
 	@Test
 	public void testFindDominantSet() {
-		Graph g = new Graph('e', "a,b	b,c		a,c");
+		Graph g = new Graph('e', "a,b	b,c		a,c",false);
 		NaiveDominantSetSolver ndsf = new NaiveDominantSetSolver();
 		ndsf.setGraph(g);
 		ndsf.solve();
@@ -33,7 +33,7 @@ public class NaiveDominantSetSolverTest {
 								"a,c 	d,b 	o,r "+
 								"a,d 	j,x		    "+
 								"c,d 	u,y 	u,j ";
-		Graph g = new Graph('e', configuration);
+		Graph g = new Graph('e', configuration,false);
 		NaiveDominantSetSolver ndsf = new NaiveDominantSetSolver();
 		ndsf.setGraph(g);
 		ndsf.solve();
@@ -45,7 +45,7 @@ public class NaiveDominantSetSolverTest {
 	@Test
 	public void testGetDominationNumber() {
 		NaiveDominantSetSolver ndsf = new NaiveDominantSetSolver();
-		ndsf.setGraph(new Graph('e', "a,b		b,c		a,c"));
+		ndsf.setGraph(new Graph('e', "a,b		b,c		a,c",false));
 		ndsf.solve();
 		assertEquals(1,ndsf.getDominationNumber());
 	}

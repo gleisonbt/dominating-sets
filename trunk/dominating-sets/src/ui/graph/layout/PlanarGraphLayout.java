@@ -7,7 +7,6 @@ import java.awt.Dimension;
 import java.awt.geom.Point2D;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 /**
@@ -41,7 +40,7 @@ public class PlanarGraphLayout extends AbstractGraphLayout{
 	}
 	@Override
 	public void computeLayout(Dimension plane) {
-		final List<?> V = getGraph().getVertecies();
+		final Vertex[]V = getGraph().getVertecies();
 		final Set<Vertex>  U = new HashSet<Vertex>();
 		final Set<Vertex>  W = new HashSet<Vertex>();
 		//final double beta   = (Double)getGraph().getMetric(GraphMetrics.AverageDegree); 
@@ -61,15 +60,15 @@ public class PlanarGraphLayout extends AbstractGraphLayout{
 		}
 		
 		if(U.size()==0){
-			U.add((Vertex)V.get(0));
-			W.remove(V.get(0));
+			U.add(V[0]);
+			W.remove(V[0]);
 		}
 		
 		//final Random r = new Random();
 		int i=0;
 		
 		double r  = Math.sqrt(xc*xc+yc*yc)/2;
-		n = V.size();
+		n = V.length;
 		
 		for(Vertex w: W){
 			final int x = (int) (xc + r * Math.cos(i * 2 * Math.PI/W.size()));
@@ -88,7 +87,7 @@ public class PlanarGraphLayout extends AbstractGraphLayout{
 			for(Object o: V){
 				Vertex v = (Vertex)o;
 				forces.put(v, 0.0);
-				List<Vertex>N=v.getNeighborVertecies();
+				Vertex[]N=v.getNeighborVertecies();
 				for(Vertex u:N){
 					double Fuv = force(v,u);
 					forces.put(u, forces.get(u)+Fuv);
