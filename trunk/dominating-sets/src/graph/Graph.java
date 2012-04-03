@@ -1,29 +1,27 @@
 package graph;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
-
-import main.MapFunction;
-import main.Utils;
 /**
  * Graph data structure
  * @author Hussain Al-Mutawa
  * @version 1.0
  * @since 1.0
  */
-public class Graph {
-	private final Map<String,Edge>edges;
-	private final Map<String,Vertex>vertecies;
+public class Graph<E extends Locateable,V extends Locateable>{
+	private final List<Edge<E,V>>edges;
+	private final List<Vertex<E,V>>vertecies;
 	private final char name;
 	private final String configuration;
 	private final EnumMap<GraphMetrics, Object>metrics;
 	private double density = -1.0d;
-	private double connectivity = -1.0d;
+	
 	private double averageDegree = -1.0d;
 	/**
 	 * instantiate new graph with its data structure
@@ -37,8 +35,8 @@ public class Graph {
 		metrics.put(GraphMetrics.MaxDegree, Integer.MIN_VALUE);
 		this.configuration=configuration;
 		this.name=name;
-		this.edges=new HashMap<String, Edge>();
-		this.vertecies=new HashMap<String, Vertex>();
+		this.edges=Collections.synchronizedList(new ArrayList<Edge<E,V>>());
+		this.vertecies=Collections.synchronizedList(new ArrayList<Vertex<E,V>>());
 		final String []pairs = configuration.split("\\s+");
 		for(final String pair:pairs){
 			//System.out.printf("%s-",pair);
@@ -47,11 +45,11 @@ public class Graph {
 			final String vi = vs[0];
 			final String vj = vs[1];
 
-			final Vertex v1 = vertecies.containsKey(vi)? vertecies.get(vi) : new Vertex(vi);
-			final Vertex v2 = vertecies.containsKey(vj)? vertecies.get(vj) : new Vertex(vj);
-			edges.put(en, new Edge(en, v1, v2));
-			vertecies.put(vi, v1);
-			vertecies.put(vj, v2);
+			final Vertex<E,V> v1 = getVertex(vi,true);
+			final Vertex<E,V> v2 = getVertex(vj,true);
+			edges.add(new Edge<E,V>(en, v1, v2));
+			if(!vertecies.contains(v1)) vertecies.add(v1);
+			if(!vertecies.contains(v2)) vertecies.add(v2);
 			
 			metrics.put(GraphMetrics.MinDegree, Math.min(v1.degree(), (Integer)metrics.get(GraphMetrics.MinDegree)));
 			metrics.put(GraphMetrics.MaxDegree, Math.max(v1.degree(), (Integer)metrics.get(GraphMetrics.MaxDegree)));
@@ -59,6 +57,13 @@ public class Graph {
 			metrics.put(GraphMetrics.MaxDegree, Math.max(v2.degree(), (Integer)metrics.get(GraphMetrics.MaxDegree)));
 		}
 		this.updateMetrics();
+	}
+	
+	private Vertex<E,V> getVertex(String name,boolean createNewIfNotExists){
+		for(Vertex<E,V> v:vertecies){
+			if(name.equals(v.getName())){return v;}
+		}
+		return createNewIfNotExists?new Vertex<E,V>(name):null;
 	}
 	
 	protected void updateMetrics(){
@@ -84,6 +89,40 @@ public class Graph {
 	}
 	
 	public char getName(){return name;}
+	
+	public boolean isPlanner(){
+		//final Graph<E,V> u = new Graph<E,V>('o', getConfiguration());
+		throw new UnsupportedOperationException();
+		//return true;
+	}
+	
+	/**
+	 * removes a vertex and all of the incident edges on it
+	 * @param v
+	 */
+	public int removeVertex(Vertex u){
+		final Iterator<Vertex<E,V>>it=vertecies.iterator();
+		int count=0; 
+		while(it.hasNext()){
+			final Vertex<E,V> v = it.next();
+			if(v!=u){
+				final Set<Edge<E,V>>re=v.removeNeighbor(u);
+				if(!re.isEmpty()){
+					System.out.println(Arrays.toString(re.toArray()));
+					if(!this.edges.removeAll(re)){
+						throw new RuntimeException(Arrays.toString(re.toArray()));
+					}
+					count++;
+				}
+			}
+		}
+		
+		if(!this.vertecies.remove(u)){
+			throw new RuntimeException(u + " can not be removed");
+		}
+		return count;
+	}
+	
 	public boolean isConnected(){
 		//if there is no vertices at all, the graph is empty and not connected
 		if(this.vertecies.isEmpty()){
@@ -94,18 +133,18 @@ public class Graph {
 			return false;
 		}
 		//pick any vertex
-		Vertex vertex = this.vertecies.values().iterator().next();
+		Vertex<E,V> vertex = this.vertecies.iterator().next();
 		//keep a set of the visited nodes so far
-		final Set<Vertex>visited=new HashSet<Vertex>();
+		final Set<Vertex<E,V>>visited=new HashSet<Vertex<E,V>>();
 		//add the vertex to the visited set
 		visited.add(vertex);
 		while(visited.size()<this.vertecies.size()){
-			for(Vertex v:vertex.getNeighborVertecies()){
+			for(Vertex<E,V> v:vertex.getNeighborVertecies()){
 				visited.add(v);
 			}
 			vertex.setVisited(true);
 			boolean found=false;
-			for(Vertex v:visited){
+			for(Vertex<E,V> v:visited){
 				if(!v.isVisited()){
 					vertex = v;
 					found = true;
@@ -122,9 +161,9 @@ public class Graph {
 		//the graph
 		return visited.size()==this.vertecies.size();
 	}
-	public Set<Vertex>getVertecisNotLinkedToDominantVertex(){
-		Set<Vertex>set=new HashSet<Vertex>();
-		for(Vertex v:this.vertecies.values()){
+	public Set<Vertex<E,V>>getVertecisNotLinkedToDominantVertex(){
+		Set<Vertex<E,V>>set=new HashSet<Vertex<E,V>>();
+		for(Vertex<E,V> v:this.vertecies){
 			if(!(v.isDominant() || v.isLinkedToDominantVertex())){
 				set.add(v);
 			}
@@ -132,7 +171,7 @@ public class Graph {
 		return set;
 	}
 	public boolean hasVertexNotLinkedToDominantVertex(){
-		for(Vertex v:this.vertecies.values()){
+		for(Vertex<E,V> v:this.vertecies){
 			if(!(v.isDominant() || v.isLinkedToDominantVertex())){
 				return true;
 			}
@@ -140,60 +179,22 @@ public class Graph {
 		return false;
 	}
 
-	public Vertex getVertix(String name){
-		return this.vertecies.get(name);
+	public Vertex<E,V> getVertix(String name){
+		return getVertex(name,false);
 	}
-	public Edge getEdge(String name){
-		return this.edges.get(name);
+	public Edge<E,V> getEdge(String name){
+		for(Edge<E,V> e:edges){
+			if(name.equals(e.getName())){return e;}
+		}
+		return null;
 	}
-	public Vertex[] getVertecies() {
-		return vertecies.values().toArray(new Vertex[vertecies.size()]);
+	public List<Vertex<E,V>> getVertecies() {
+		return vertecies;
 	}
-	public Edge[] getEdges() {
-		return edges.values().toArray(new Edge[edges.size()]);
+	public List<Edge<E,V>> getEdges() {
+		return edges;
 	}
-	public String getNeighborsPrologSyntax(){
-		final StringBuffer sb = new StringBuffer();
-		Utils.map(this.vertecies.values(), new MapFunction<Vertex>() {
-			public void map(int index, Vertex v) {
-				sb.append("neighbors("+v+","+Arrays.toString(v.getNeighborVertecies()) + ").\n");
-			};
-		});
-		return sb.toString();
-	}
-	public String getVerteciesPrologSyntax(){
-		final StringBuffer sb = new StringBuffer();
-		Utils.map(this.vertecies.values(), new MapFunction<Vertex>() {
-			public void map(int index, Vertex v) {
-				sb.append("vertex("+v+").\n");
-			};
-		});
-		return sb.toString();
-	}
-	public String getEdgesPrologSyntax(){
-		final StringBuffer sb = new StringBuffer();
-		Utils.map(this.edges.values(), new MapFunction<Edge>() {
-			public void map(int index, Edge e) {
-				sb.append("edge("+e.v1+","+e.v2+").\n");
-			};
-		});
-		return sb.toString();
-	}
-
-	public String getConnectedPrologSyntax(){
-		final StringBuffer sb = new StringBuffer();
-
-		sb.append((isConnected()?"":"not_")+ "connected([");
-		Utils.map(this.edges.values(), new MapFunction<Edge>() {
-			public void map(int index, Edge e) {
-				sb.append("("+e.v1+","+e.v2+"),");
-			};
-		});
-		sb.setLength(sb.toString().length()-1);
-		sb.append("]).");
-		return sb.toString();
-		//return "connected("+this.name+")"+(this.isConnected()?".":":-fail.");
-	}
+	
 	public String getConfiguration() {
 		return configuration;
 	}

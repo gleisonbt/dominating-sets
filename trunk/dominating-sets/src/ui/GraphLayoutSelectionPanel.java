@@ -1,6 +1,9 @@
 package ui;
 
 import java.awt.BorderLayout;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -10,11 +13,23 @@ import javax.swing.JRadioButton;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import ui.graph.layout.CircularGraphLayout;
 import ui.graph.layout.GraphLayout;
-import ui.graph.layout.GraphLayoutType;
+import ui.graph.layout.MazeGraphLayout;
+import ui.graph.layout.PlanarGraphLayout;
+import ui.graph.layout.RandomGridGraphLayout;
+import ui.graph.layout.StarGraphLayout;
 
 public abstract class GraphLayoutSelectionPanel extends JPanel {
 	private final ButtonGroup group;
+	public static Map<String,Class<? extends GraphLayout>> layouts = new HashMap<String,Class<? extends GraphLayout>>();
+	static{
+		layouts.put("Random",	RandomGridGraphLayout.class);
+		layouts.put("Circular",	CircularGraphLayout.class);
+		layouts.put("Planar",	PlanarGraphLayout.class);
+		layouts.put("Maze",		MazeGraphLayout.class);
+		layouts.put("Star",		StarGraphLayout.class);		
+	}
 	public GraphLayoutSelectionPanel() {
 		super();
 		setLayout(new BorderLayout());
@@ -24,13 +39,13 @@ public abstract class GraphLayoutSelectionPanel extends JPanel {
 		panel.setBorder(BorderFactory.createTitledBorder("Graph layout"));
 		panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 		
-		for(final GraphLayoutType layout:GraphLayoutType.values()){
-			final JRadioButton rb = new JRadioButton(layout.name());
+		for(final Entry<String,Class<? extends GraphLayout>> layout:layouts.entrySet()){
+			final JRadioButton rb = new JRadioButton(layout.getKey());
 			rb.addChangeListener(new ChangeListener() {
 				@Override
 				public void stateChanged(ChangeEvent arg0) {
 					if(rb.isSelected()){
-						layoutChanged(layout.clazz());
+						layoutChanged(layout.getValue());
 					}
 				}
 			});
@@ -43,4 +58,5 @@ public abstract class GraphLayoutSelectionPanel extends JPanel {
 		((JRadioButton)group.getElements().nextElement()).setSelected(true);
 	}
 	public abstract void layoutChanged(Class<? extends GraphLayout> layout);
+	
 }

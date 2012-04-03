@@ -20,7 +20,6 @@ public class NaiveDominantSetSolverTest {
 	@Test
 	public void testFindDominantSet() {
 		Graph g = new Graph('e', "a,b	b,c		a,c");
-		System.out.println(g.getNeighborsPrologSyntax());
 		NaiveDominantSetSolver ndsf = new NaiveDominantSetSolver();
 		ndsf.setGraph(g);
 		ndsf.solve();

@@ -1,27 +1,22 @@
 package ui.graph;
 
-import graph.Edge;
+import graph.Locateable;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Graphics2D;
+import java.awt.geom.Point2D;
+import java.awt.geom.Point2D.Double;
 
 import javax.swing.JComponent;
 
-public class EdgeUI extends JComponent {
-	private final Edge edge;
+public class EdgeUI extends JComponent implements Locateable{
 	
 	private EdgeDirection edgeDirection=EdgeDirection.NWSE;
-	public EdgeUI(Edge edge) {
+	public EdgeUI() {
 		super();
-		this.edge=edge;
 		setOpaque(true);
 	}
 	
-	public Edge getEdge() {
-		return edge;
-	}
 	
 	@Override
 	public void paintComponent(Graphics g) {
@@ -74,4 +69,16 @@ public class EdgeUI extends JComponent {
 	int abs(int x){return x>0?x:-x;}
 	int min(int x, int y){return x<y?x:y;}
 	int max(int x, int y){return x>y?x:y;}
+
+	@Override
+	public Double getLocationDouble() {
+		return new Point2D.Double(getX(),getY());
+	}
+
+	@Override
+	public void setLocation(Double point) {
+		this.setLocation((int)point.x, (int)point.y);
+	}
+	
+	
 }

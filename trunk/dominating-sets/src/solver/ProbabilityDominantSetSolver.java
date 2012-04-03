@@ -23,11 +23,11 @@ import java.util.Set;
 public class ProbabilityDominantSetSolver extends AbstractDominantSetSolver {
 
 	@Override
-	protected Set<Vertex> findDominantSet() {
+	protected Set<Vertex<?,?>> findDominantSet() {
 		final Graph g = getGraph();
-		final List<Vertex>V = new ArrayList<Vertex>(Arrays.asList(g.getVertecies()));
-		final Set<Vertex>dominantSet = new HashSet<Vertex>();
-		int E = g.getEdges().length;
+		final List<Vertex>V = new ArrayList<Vertex>(g.getVertecies());
+		final Set<Vertex<?,?>>dominantSet = new HashSet<Vertex<?,?>>();
+		int E = g.getEdges().size();
 		Vertex max;
 		do{
 			max = V.get(0);
@@ -44,7 +44,7 @@ public class ProbabilityDominantSetSolver extends AbstractDominantSetSolver {
 			max.setDominant(true);
 			dominantSet.add(max);
 			V.remove(max);
-			V.removeAll(Arrays.asList(max.getNeighborVertecies()));
+			V.removeAll(max.getNeighborVertecies());
 
 		}while(!(V.isEmpty() ||  max==V.get(0)));
 		return dominantSet;

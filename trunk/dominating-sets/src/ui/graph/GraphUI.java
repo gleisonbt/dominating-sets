@@ -9,8 +9,7 @@ import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import javax.swing.JPanel;
 
@@ -19,14 +18,11 @@ import ui.graph.layout.LayoutAdaptor;
 
 public abstract class GraphUI extends JPanel{
 	public abstract Class<? extends GraphLayout>getGraphLayout();
-	private Graph g;
-	private final Map<String,VertexUI>vertices;
-	private final Map<String,EdgeUI>edges;
-	private int vs;
+	private Graph<EdgeUI,VertexUI> g;
+	private int VERTEX_SIZE=30;
+	
 	public GraphUI() {
 		super();
-		this.vertices=new HashMap<String, VertexUI>();
-		this.edges=new HashMap<String, EdgeUI>();
 		this.setLayout(null);
 		this.setBackground(Color.WHITE);
 		this.addComponentListener(new ComponentAdapter() {
@@ -40,7 +36,8 @@ public abstract class GraphUI extends JPanel{
 	}
 
 
-	void redraw(){
+	public void redraw(){
+		
 		redraw(REDRAW_VERTICIES|REDRAW_EDGES);
 	}
 
@@ -63,48 +60,50 @@ public abstract class GraphUI extends JPanel{
 		repaint();
 	}
 	
-	private int x,y,vertexSize=30;
+	
 	
 	private void redrawEdges(){
-		
-		for(final Edge edge:g.getEdges()){
+		this.revalidate();
+		this.repaint();
+		for(final Edge<EdgeUI,VertexUI> edge:g.getEdges()){
 			redrawEdge(edge);
 		}
 	}
 	
-	private void redrawEdge(Edge edge) {
-		final VertexUI v1 = GraphUI.this.vertices.get(edge.getVertex1().getName());
-		final VertexUI v2 = GraphUI.this.vertices.get(edge.getVertex2().getName());
-		int x1 = v1.getLocation().x+vertexSize/2;
-		int y1 = v1.getLocation().y+vertexSize/2;
-		int x2 = v2.getLocation().x+vertexSize/2;
-		int y2 = v2.getLocation().y+vertexSize/2;
+	private void redrawEdge(Edge<EdgeUI,VertexUI> edge) {
+		final VertexUI v1 = edge.getVertex1().getViewableObject();
+		final VertexUI v2 = edge.getVertex2().getViewableObject();
+		int x1 = v1.getLocation().x+VERTEX_SIZE/2;
+		int y1 = v1.getLocation().y+VERTEX_SIZE/2;
+		int x2 = v2.getLocation().x+VERTEX_SIZE/2;
+		int y2 = v2.getLocation().y+VERTEX_SIZE/2;
 		
-		final EdgeUI e = this.edges.get(edge.getName());
-		
-		e.setBounds2(x1, y1, x2, y2);
+		edge.getViewableObject().setBounds2(x1, y1, x2, y2);
 	}
 
 	private void redrawVerticies() {
 		new Thread(){
 			public void run(){
-				new LayoutAdaptor(g, getSize(), getVertices(), getGraphLayout());	
+				new LayoutAdaptor(g, getSize(), getGraphLayout());	
 				System.out.println("finished");
 			}
 		}.start();
-		
-		
 	}
 
-	public void setVertexBackColor(Vertex vertex,Color color){
-		this.vertices.get(vertex.getName()).setVertexBackColor(color);
+	public void setVertexBackColor(Vertex<EdgeUI,VertexUI> vertex,Color color){
+		vertex.getViewableObject().setVertexBackColor(color);
+		//throw new UnsupportedOperationException();
 	}
 
-	public void setGraph(Graph g) {
-		this.vertices.clear();
-		this.edges.clear();
+	public void setGraph(Graph<EdgeUI,VertexUI> g) {
+		this.g=g;
 		this.removeAll();
-		for(final Vertex vertex:g.getVertecies()){
+		this.invalidate();
+		this.revalidate();
+		this.validate();
+		this.repaint();
+		
+		for(final Vertex<EdgeUI,VertexUI> vertex:g.getVertecies()){
 			final VertexUI vui = new VertexUI(vertex){
 				
 				@Override
@@ -122,44 +121,44 @@ public abstract class GraphUI extends JPanel{
 				@Override
 				public void componentMoved(ComponentEvent e) {
 					super.componentMoved(e);
-					final Edge[]edges=vui.getVertex().getEdges();
-					for(final Edge edge:edges){
+					final List<Edge<EdgeUI,VertexUI>>edges=vui.getVertex().getEdges();
+					for(final Edge<EdgeUI,VertexUI> edge:edges){
 						redrawEdge(edge);
 					}
 				}
 			});
-			vertices.put(vertex.getName(),vui);
-			vui.setSize(new Dimension(vertexSize,vertexSize));
+			vui.setSize(new Dimension(VERTEX_SIZE,VERTEX_SIZE));
+			vertex.setViewableObject(vui);
 			add(vui);
 		}
 
-		for(final Edge edge:g.getEdges()){
-			final EdgeUI edgeUI = new EdgeUI(edge);
-			this.edges.put(edge.getName(), edgeUI);
-			add(edgeUI);
+		for(final Edge<EdgeUI,VertexUI> edge:g.getEdges()){
+			edge.setViewableObject(new EdgeUI());
+			add(edge.getViewableObject());
 		}
 
-		this.g=g;
-		vs = g.getVertecies().length;
+		
 		redraw();
 	}
-	public Graph getGraph() {
+	public Graph<EdgeUI,VertexUI> getGraph() {
 		return g;
 	}
 
-	public VertexUI[] getVertices() {
-		return vertices.values().toArray(new VertexUI[this.vertices.size()]);
-	}
-	
-	public void vertexClicked(Vertex vertex){}
+	public void vertexClicked(Vertex<EdgeUI,VertexUI> vertex){}
 
 	public void resetAllVerticesBackColor() {
-		for(VertexUI vui:this.vertices.values()){
-			vui.setVertexBackColor(Color.white);
+		for(Vertex<EdgeUI,VertexUI> v:g.getVertecies()){
+			v.getViewableObject().setVertexBackColor(Color.white);
 		}
 	}
-
-	public VertexUI getVertex(String vertexName) {
-		return this.vertices.get(vertexName);
+	public VertexUI getVertexUI(String name){
+		return g.getVertix(name).getViewableObject();
+	}
+	public void removeVertex(Vertex<EdgeUI,VertexUI> v){
+		this.remove(v.getViewableObject());
+		for(Edge<EdgeUI,VertexUI> e:v.getEdges()){
+			this.remove(e.getViewableObject());
+		}
+		g.removeVertex(v);
 	}
 }

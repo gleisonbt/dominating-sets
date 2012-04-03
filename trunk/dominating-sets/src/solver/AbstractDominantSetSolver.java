@@ -9,14 +9,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 public abstract class AbstractDominantSetSolver implements DominantSetSolver{
-	private Graph g;
-	private Set<Vertex>dominantSet;
+	private Graph<?,?> g;
+	private Set<Vertex<?,?>>dominantSet;
 	private int iterations = 0;
 	private long elapsedTime = 0L;
 	@Override
-	public void setGraph(Graph g) {
+	public void setGraph(Graph<?,?> g) {
 		this.g=g;
-		this.dominantSet=new HashSet<Vertex>();
+		this.dominantSet=new HashSet<Vertex<?,?>>();
 	}
 
 	@Override
@@ -25,12 +25,12 @@ public abstract class AbstractDominantSetSolver implements DominantSetSolver{
 	}
 
 	@Override
-	public Vertex[] getDominantSet() {
+	public Vertex<?,?>[] getDominantSet() {
 		return this.dominantSet.toArray(new Vertex[this.dominantSet.size()]);
 	}
 
 	@Override
-	public Graph getGraph() {
+	public Graph<?,?> getGraph() {
 		return g;
 	}
 	
@@ -47,7 +47,7 @@ public abstract class AbstractDominantSetSolver implements DominantSetSolver{
 		stopTimer();
 	}
 	
-	protected abstract Set<Vertex> findDominantSet();
+	protected abstract Set<Vertex<?,?>> findDominantSet();
 
 	@Override
 	public void incrementIterations() {
@@ -70,14 +70,14 @@ public abstract class AbstractDominantSetSolver implements DominantSetSolver{
 	private final void reset() {
 		this.iterations=0;
 		this.elapsedTime=-1;
-		for(Vertex v:this.g.getVertecies()){
+		for(Vertex<?,?> v:this.g.getVertecies()){
 			v.setConnectness(0.0);
 			v.setDominant(false);
 			v.setVisited(false);
 		}
 	}
 	@Override
-	public void setDominantSet(Collection<Vertex> vertices) {
-		this.dominantSet = new HashSet<Vertex>(vertices);
+	public void setDominantSet(Collection<Vertex<?,?>> vertices) {
+		this.dominantSet = new HashSet<Vertex<?,?>>(vertices);
 	}
 }
