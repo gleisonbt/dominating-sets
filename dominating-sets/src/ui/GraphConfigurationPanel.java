@@ -29,6 +29,7 @@ public abstract class GraphConfigurationPanel extends JPanel implements ActionLi
 
 	public GraphConfigurationPanel() {
 		super(new BorderLayout());
+		setBorder(BorderFactory.createEmptyBorder(3,3,3,3));
 		this.panel0=new JPanel();
 		this.panel1=new JPanel();
 

@@ -15,7 +15,7 @@ public enum GraphMetrics{
 	SolveTime		{public Class<?> type(){return Long.class;}}, 
 	isConnected		{public Class<?> type(){return Boolean.class;}}, 
 	isSolved		{public Class<?> type(){return Boolean.class;}},
-	isPlanar		{public Class<?> type(){return Boolean.class;}},
+	//isPlanar		{public Class<?> type(){return Boolean.class;}},
 	isTree			{public Class<?> type(){return Boolean.class;}};
 	
 	public abstract Class<?>type();

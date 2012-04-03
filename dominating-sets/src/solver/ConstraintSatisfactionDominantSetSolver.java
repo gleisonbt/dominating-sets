@@ -6,14 +6,21 @@ package solver;
 import graph.Graph;
 import graph.Vertex;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
-import choco.Choco;
-import choco.cp.model.CPModel;
-import choco.kernel.model.Model;
-import choco.kernel.model.variables.integer.IntegerVariable;
+import JaCoP.constraints.XeqY;
+import JaCoP.constraints.netflow.NetworkBuilder;
+import JaCoP.constraints.netflow.NetworkFlow;
+import JaCoP.core.IntVar;
+import JaCoP.core.Store;
+import JaCoP.search.DepthFirstSearch;
+import JaCoP.search.IndomainMin;
+import JaCoP.search.InputOrderSelect;
+import JaCoP.search.Search;
+import JaCoP.search.SelectChoicePoint;
 
 /**
  * constraint satisfaction solver for the dominant set problem
@@ -24,37 +31,46 @@ import choco.kernel.model.variables.integer.IntegerVariable;
 public class ConstraintSatisfactionDominantSetSolver extends
 		AbstractDominantSetSolver {
 
+	
+	
 	@Override
-	protected Set<Vertex<?,?>> findDominantSet() {
-		Model m = new CPModel();
+	protected Set<Vertex > findDominantSet() {
 		
-		final Graph<?,?> g = getGraph();
-		final Map<Vertex<?,?>,IntegerVariable>vars=new HashMap<Vertex<?,?>,IntegerVariable>(g.getVertecies().size());
-
-		for(Vertex<?,?> v:getGraph().getVertecies()){
-			final IntegerVariable var = Choco.makeIntVar(v.getName(), 0,1);
-			vars.put(v,var);
-		}
-		for(Vertex<?,?> v:getGraph().getVertecies()){
-			IntegerVariable var = vars.get(v);
-			for(Vertex<?,?>n:v.getNeighborVertecies()){
-				if(v==n)continue;
-				IntegerVariable nvar = vars.get(n);
-				//Choco.neg(new IntegerExpressionVariable(var, IntegerExpressionVariable., variables))
+		final Graph  g = getGraph();
+		final Vertex[] V = g.getVertecies();
+		Store store  = new Store();
+		NetworkBuilder net = new NetworkBuilder();
+		List<IntVar>l=new ArrayList<IntVar>();
+		for(Vertex v:V){
+			IntVar A = new IntVar(store,v.getName(), 0, 1);
+			l.add(A);
+			List<Vertex>N=Graph.asList(v.getNeighborVertecies());
+			for(Vertex u:V){
+		
+				if(!N.contains(u)){
+					IntVar B = new IntVar(store,v.getName(), 0, 1);
+					l.add(B);
+					IntVar[]vars = {A,B};
+					store.impose(new XeqY(A,B));
+				}else{
+					IntVar C = new IntVar(store,v.getName(), 1, 2);
+					l.add(C);
+					IntVar[]vars = {A,C};
+					store.impose(new XeqY(A,C));
+				}
 			}
 		}
-
-//		Solution s = new DefaultSolver(network).getSolution();
-//		
-//		for(Vertex v:getGraph().getVertecies()){
-//			System.out.println(vars.get(v));
-//			v.setDominant(s.getIntValue(vars.get(v))==1);
-//		}
-//		Set<Vertex>set=new HashSet<Vertex>();
-//		for(Vertex v:g.getVertecies()){
-//			if(v.isDominant())set.add(v);
-//		}
-
+		
+		 Search<IntVar> search = new DepthFirstSearch<IntVar>(); 
+ 
+	        boolean result = search.assignSolution(); 
+	        
+	        if ( result ) 
+	            System.out.println("Solution: " + Arrays.toString(l.toArray())  ); 
+	        else 
+	            System.out.println("*** No");
+		
+		store.impose(new NetworkFlow(net));
 		return null;
 	}
 

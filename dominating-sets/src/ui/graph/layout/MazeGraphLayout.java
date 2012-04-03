@@ -1,9 +1,10 @@
 package ui.graph.layout;
 
-import graph.Vertex;
 
 import java.awt.Dimension;
 import java.awt.geom.Point2D;
+
+import graph.Vertex;
 
 public class MazeGraphLayout extends AbstractGraphLayout {
 

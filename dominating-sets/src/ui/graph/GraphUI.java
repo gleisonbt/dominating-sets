@@ -1,7 +1,9 @@
 package ui.graph;
 
+
 import graph.Edge;
 import graph.Graph;
+import graph.Locateable;
 import graph.Vertex;
 
 import java.awt.Color;
@@ -9,7 +11,6 @@ import java.awt.Dimension;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
-import java.util.List;
 
 import javax.swing.JPanel;
 
@@ -18,7 +19,7 @@ import ui.graph.layout.LayoutAdaptor;
 
 public abstract class GraphUI extends JPanel{
 	public abstract Class<? extends GraphLayout>getGraphLayout();
-	private Graph<EdgeUI,VertexUI> g;
+	private Graph g;
 	private int VERTEX_SIZE=30;
 	
 	public GraphUI() {
@@ -65,20 +66,20 @@ public abstract class GraphUI extends JPanel{
 	private void redrawEdges(){
 		this.revalidate();
 		this.repaint();
-		for(final Edge<EdgeUI,VertexUI> edge:g.getEdges()){
+		for(final Edge edge:g.getEdges()){
 			redrawEdge(edge);
 		}
 	}
 	
-	private void redrawEdge(Edge<EdgeUI,VertexUI> edge) {
-		final VertexUI v1 = edge.getVertex1().getViewableObject();
-		final VertexUI v2 = edge.getVertex2().getViewableObject();
+	private void redrawEdge(Edge edge) {
+		final VertexUI v1 = (VertexUI)edge.getVertex1().getViewableObject();
+		final VertexUI v2 = (VertexUI)edge.getVertex2().getViewableObject();
 		int x1 = v1.getLocation().x+VERTEX_SIZE/2;
 		int y1 = v1.getLocation().y+VERTEX_SIZE/2;
 		int x2 = v2.getLocation().x+VERTEX_SIZE/2;
 		int y2 = v2.getLocation().y+VERTEX_SIZE/2;
 		
-		edge.getViewableObject().setBounds2(x1, y1, x2, y2);
+		((EdgeUI)edge.getViewableObject()).setBounds2(x1, y1, x2, y2);
 	}
 
 	private void redrawVerticies() {
@@ -90,12 +91,11 @@ public abstract class GraphUI extends JPanel{
 		}.start();
 	}
 
-	public void setVertexBackColor(Vertex<EdgeUI,VertexUI> vertex,Color color){
-		vertex.getViewableObject().setVertexBackColor(color);
-		//throw new UnsupportedOperationException();
+	public void setVertexBackColor(Vertex vertex,Color color){
+		vertex.getViewableObject().setBackColor(color);
 	}
 
-	public void setGraph(Graph<EdgeUI,VertexUI> g) {
+	public void setGraph(Graph g) {
 		this.g=g;
 		this.removeAll();
 		this.invalidate();
@@ -103,7 +103,7 @@ public abstract class GraphUI extends JPanel{
 		this.validate();
 		this.repaint();
 		
-		for(final Vertex<EdgeUI,VertexUI> vertex:g.getVertecies()){
+		for(final Vertex vertex:g.getVertecies()){
 			final VertexUI vui = new VertexUI(vertex){
 				
 				@Override
@@ -121,8 +121,8 @@ public abstract class GraphUI extends JPanel{
 				@Override
 				public void componentMoved(ComponentEvent e) {
 					super.componentMoved(e);
-					final List<Edge<EdgeUI,VertexUI>>edges=vui.getVertex().getEdges();
-					for(final Edge<EdgeUI,VertexUI> edge:edges){
+					final Edge[] edges=vui.getVertex().getEdges();
+					for(final Edge edge:edges){
 						redrawEdge(edge);
 					}
 				}
@@ -132,32 +132,33 @@ public abstract class GraphUI extends JPanel{
 			add(vui);
 		}
 
-		for(final Edge<EdgeUI,VertexUI> edge:g.getEdges()){
+		for(final Edge edge:g.getEdges()){
 			edge.setViewableObject(new EdgeUI());
-			add(edge.getViewableObject());
+			add((EdgeUI)edge.getViewableObject());
 		}
 
 		
 		redraw();
 	}
-	public Graph<EdgeUI,VertexUI> getGraph() {
+	public Graph getGraph() {
 		return g;
 	}
 
-	public void vertexClicked(Vertex<EdgeUI,VertexUI> vertex){}
+	public void vertexClicked(Vertex vertex){}
 
 	public void resetAllVerticesBackColor() {
-		for(Vertex<EdgeUI,VertexUI> v:g.getVertecies()){
-			v.getViewableObject().setVertexBackColor(Color.white);
+		for(Vertex v:g.getVertecies()){
+			v.getViewableObject().setBackColor(Color.white);
 		}
 	}
 	public VertexUI getVertexUI(String name){
-		return g.getVertix(name).getViewableObject();
+		return (VertexUI)g.getVertix(name).getViewableObject();
 	}
-	public void removeVertex(Vertex<EdgeUI,VertexUI> v){
-		this.remove(v.getViewableObject());
-		for(Edge<EdgeUI,VertexUI> e:v.getEdges()){
-			this.remove(e.getViewableObject());
+	
+	public void removeVertex(Vertex v){
+		this.remove((VertexUI)v.getViewableObject());
+		for(Edge e:v.getEdges()){
+			this.remove((EdgeUI)e.getViewableObject());
 		}
 		g.removeVertex(v);
 	}

@@ -4,6 +4,7 @@ import graph.Graph;
 import graph.GraphMetrics;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.util.EnumMap;
 
@@ -15,36 +16,31 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.DefaultTableColumnModel;
 
 public class GraphInformationPanel extends JPanel{
-	EnumMap<GraphMetrics,Object> data;
+	Graph graph;
 	public GraphInformationPanel() {
 		super(new BorderLayout(5,5));
-		//this.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-		data = new EnumMap<GraphMetrics,Object>(GraphMetrics.class);
-		for(final GraphMetrics gm:GraphMetrics.values()){
-			setInfo(gm, null);
-		}
+		setBorder(BorderFactory.createEmptyBorder(3,3,3,3));
 		JTable table = new JTable(new AbstractTableModel(){
-			@Override
-			public String getColumnName(int c) {
-				return new String[]{"Property","Value"}[c];
-			}
 			@Override
 			public int getColumnCount() {
 				return 2;
 			}
 			@Override
 			public int getRowCount() {
-				return data.size();
+				return GraphMetrics.values().length;
 			}
 			@Override
 			public Object getValueAt(int rowIndex, int columnIndex) {
-				if(columnIndex==0) return data.keySet().toArray()[rowIndex];
-				return data.values().toArray()[rowIndex];
+				if(columnIndex==0) return GraphMetrics.values()[rowIndex].name();
+				if(graph==null){return null;}
+				return graph.getMetric(GraphMetrics.values()[rowIndex]);
 			}
 		});
 		table.setShowGrid(false);
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table.getColumnModel().getColumn(0).setPreferredWidth(120);
+		table.setSelectionBackground(Color.YELLOW);
+		table.setSelectionForeground(Color.RED);
 		table.setRowHeight(18);
 		//JScrollPane pane = new JScrollPane(table, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		//pane.setPreferredSize(new Dimension(0,300));
@@ -54,20 +50,15 @@ public class GraphInformationPanel extends JPanel{
 		add(tablepane,BorderLayout.CENTER);
 		
 	}
-	
-	public void setInfo(final Graph g){
-		for(final GraphMetrics gm:GraphMetrics.values()){
-			setInfo(gm, g.getMetric(gm));
-		}
+	public void setGraph(final Graph graph) {
+		this.graph = graph;
+		refresh();
 	}
-	public void setInfo(GraphMetrics gm,Object value){
-		data.put(gm, value);
-		invalidate();
-		validate();
-		revalidate();
-		repaint();
+	public void refresh(){
+		this.repaint();
+		this.validate();
 	}
-	public void reset(){
-		for(GraphMetrics gm:data.keySet()){data.put(gm, null);}
+	public Graph getGraph() {
+		return graph;
 	}
 }

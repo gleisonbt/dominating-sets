@@ -1,9 +1,9 @@
 package ui;
 
 import java.awt.BorderLayout;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -16,17 +16,16 @@ import javax.swing.event.ChangeListener;
 import ui.graph.layout.CircularGraphLayout;
 import ui.graph.layout.GraphLayout;
 import ui.graph.layout.MazeGraphLayout;
-import ui.graph.layout.PlanarGraphLayout;
 import ui.graph.layout.RandomGridGraphLayout;
 import ui.graph.layout.StarGraphLayout;
 
 public abstract class GraphLayoutSelectionPanel extends JPanel {
 	private final ButtonGroup group;
-	public static Map<String,Class<? extends GraphLayout>> layouts = new HashMap<String,Class<? extends GraphLayout>>();
+	public static Map<String,Class<? extends GraphLayout>> layouts = new TreeMap<String,Class<? extends GraphLayout>>();
 	static{
 		layouts.put("Random",	RandomGridGraphLayout.class);
 		layouts.put("Circular",	CircularGraphLayout.class);
-		layouts.put("Planar",	PlanarGraphLayout.class);
+		//layouts.put("Planar",	PlanarGraphLayout.class);
 		layouts.put("Maze",		MazeGraphLayout.class);
 		layouts.put("Star",		StarGraphLayout.class);		
 	}

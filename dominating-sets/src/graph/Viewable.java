@@ -1,6 +1,6 @@
 package graph;
 
-public interface Viewable<V extends Locateable> {
-	V getViewableObject();
-	void setViewableObject(V viewabl);
+public interface Viewable {
+	public Locateable getViewableObject();
+	public void setViewableObject(Locateable viewable) ;
 }

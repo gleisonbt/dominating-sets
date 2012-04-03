@@ -15,13 +15,12 @@ import java.awt.event.MouseMotionListener;
 import java.awt.geom.Point2D;
 
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 
 public abstract class VertexUI extends JComponent implements MouseMotionListener,MouseListener,Locateable{
-	private Vertex<EdgeUI,VertexUI> vertex;
+	private Vertex vertex;
 	private Color vertexBackColor = Color.white;
 	private double x,y;
-	public VertexUI(Vertex<EdgeUI,VertexUI> vertex){
+	public VertexUI(Vertex vertex){
 		super();
 		this.vertex=vertex;
 		//this.vertex.setViewableObject(this);
@@ -101,19 +100,19 @@ public abstract class VertexUI extends JComponent implements MouseMotionListener
 	@Override
 	public void mousePressed(MouseEvent e) {
 		color = getVertexBackColor();
-		setVertexBackColor(Color.orange);
+		setBackColor(Color.orange);
 		start = e.getPoint();
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		setVertexBackColor(color);
+		setBackColor(color);
 	}
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		Point p = e.getPoint();
-		Component c = e.getComponent();
+		final Point p = e.getPoint();
+		final Component c = e.getComponent();
 		c.setLocation(c.getX()+(int)(p.getX() - start.getX()), c.getY()+(int)(p.getY() - start.getY()));
 		c.repaint();
 	}
@@ -146,7 +145,7 @@ public abstract class VertexUI extends JComponent implements MouseMotionListener
 
 	}
 
-	public void setVertexBackColor(Color vertexBackColor) {
+	public void setBackColor(Color vertexBackColor) {
 		this.vertexBackColor = vertexBackColor;
 	}
 
@@ -154,7 +153,7 @@ public abstract class VertexUI extends JComponent implements MouseMotionListener
 		return this.vertexBackColor;
 	}
 
-	public Vertex<EdgeUI,VertexUI> getVertex() {
+	public Vertex getVertex() {
 		return vertex;
 	}
 
