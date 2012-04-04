@@ -14,7 +14,10 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import ui.graph.layout.CircularGraphLayout;
+import ui.graph.layout.ISOMGraphLayout;
+import ui.graph.layout.FRGraphLayout;
 import ui.graph.layout.GraphLayout;
+import ui.graph.layout.KKGraphLayout;
 import ui.graph.layout.MazeGraphLayout;
 import ui.graph.layout.RandomGridGraphLayout;
 import ui.graph.layout.StarGraphLayout;
@@ -25,7 +28,9 @@ public abstract class GraphLayoutSelectionPanel extends JPanel {
 	static{
 		layouts.put("Random",	RandomGridGraphLayout.class);
 		layouts.put("Circular",	CircularGraphLayout.class);
-		//layouts.put("Planar",	PlanarGraphLayout.class);
+		layouts.put("FRLayout",	FRGraphLayout.class);
+		layouts.put("KKLayout",	KKGraphLayout.class);
+		layouts.put("ISOMLayout",ISOMGraphLayout.class);
 		layouts.put("Maze",		MazeGraphLayout.class);
 		layouts.put("Star",		StarGraphLayout.class);		
 	}

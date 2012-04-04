@@ -5,6 +5,7 @@ import graph.Vertex;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -23,8 +24,10 @@ public class NaiveDominantSetSolver extends AbstractDominantSetSolver {
 	@Override
 	protected Set<Vertex> findDominantSet(){
 		final Graph g = getGraph();
-		final Set<Vertex>dominantSet = new HashSet<Vertex>(Arrays.asList(g.getVertecies()));
-
+		final List<Vertex>V=Arrays.asList(g.getVertecies());
+		Collections.shuffle(V);
+		final Set<Vertex>dominantSet = new HashSet<Vertex>(V);
+		
 		int size;
 		
 		do{
