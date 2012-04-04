@@ -2,6 +2,7 @@ package graph;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashSet;
@@ -16,8 +17,8 @@ import java.util.Set;
  * @since 1.0
  */
 public class Graph{
-	private final Set<Edge >edges;
-	private final Set<Vertex >vertecies;
+	private final Set<Edge>edges;
+	private final Set<Vertex>vertecies;
 	private final char name;
 	private final String configuration;
 	private final EnumMap<GraphMetrics, Object>metrics;
@@ -80,13 +81,13 @@ public class Graph{
 		final double E = edges.size();
 		averageDegree = 2*E/V;
 		density = 2*E/(V*(V-1));
-		metrics.put(GraphMetrics.Edges, E);
-		metrics.put(GraphMetrics.Verticies, V);
+		metrics.put(GraphMetrics.Edges, (int)E);
+		metrics.put(GraphMetrics.Verticies, (int)V);
 		metrics.put(GraphMetrics.Density, density);
 		metrics.put(GraphMetrics.AverageDegree, averageDegree);
 		metrics.put(GraphMetrics.isConnected, isConnected(getAdjacencyMatrx()));
 		metrics.put(GraphMetrics.Connectivity, E/V);
-		metrics.put(GraphMetrics.Faces, 2+E-V);
+		metrics.put(GraphMetrics.Faces, (int)(2+E-V));
 		
 		//metrics.put(GraphMetrics.isPlanar, isPlanner() );
 		
@@ -294,5 +295,30 @@ public class Graph{
 	}
 	public Object getMetric(GraphMetrics metric){
 		return this.metrics.get(metric);
+	}
+	public boolean containsEdge(Edge e) {
+		return this.edges.contains(e);
+	}
+	public boolean containsVertex(Vertex v) {
+		return this.vertecies.contains(v);
+	}
+	public Edge findEdge(Vertex v, Vertex u) {
+		for(Iterator<Edge>it=this.edges.iterator();it.hasNext();){
+			Edge e=it.next();
+			if((e.getVertex1()==v && e.getVertex2()==u) || (e.getVertex1()==u && e.getVertex2()==v)){
+				return e;
+			}
+		}
+		return null;//TODO
+	}
+	public Collection<Edge> findEdgeSet(Vertex v, Vertex u) {
+		Collection<Edge>es=new HashSet<Edge>();
+		for(Iterator<Edge>it=this.edges.iterator();it.hasNext();){
+			Edge e=it.next();
+			if((e.getVertex1()==v && e.getVertex2()==u) || (e.getVertex1()==u && e.getVertex2()==v)){
+				es.add(e);
+			}
+		}
+		return es;
 	}
 }
