@@ -22,10 +22,4 @@ public class KKGraphLayout extends AbstractGraphLayout {
 		}
 	}
 
-	@Override
-	public Double next() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
 }

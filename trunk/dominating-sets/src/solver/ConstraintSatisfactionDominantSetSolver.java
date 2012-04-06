@@ -9,7 +9,6 @@ import graph.Vertex;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 
 import JaCoP.constraints.XeqY;
 import JaCoP.constraints.netflow.NetworkBuilder;
@@ -17,10 +16,7 @@ import JaCoP.constraints.netflow.NetworkFlow;
 import JaCoP.core.IntVar;
 import JaCoP.core.Store;
 import JaCoP.search.DepthFirstSearch;
-import JaCoP.search.IndomainMin;
-import JaCoP.search.InputOrderSelect;
 import JaCoP.search.Search;
-import JaCoP.search.SelectChoicePoint;
 
 /**
  * constraint satisfaction solver for the dominant set problem
@@ -34,10 +30,10 @@ public class ConstraintSatisfactionDominantSetSolver extends
 	
 	
 	@Override
-	protected Set<Vertex > findDominantSet() {
+	protected void findDominantSet() {
 		
-		final Graph  g = getGraph();
-		final Vertex[] V = g.getVertecies();
+		//final Graph  g = getGraph();
+		final Vertex[] V = getVertecies();
 		Store store  = new Store();
 		NetworkBuilder net = new NetworkBuilder();
 		List<IntVar>l=new ArrayList<IntVar>();
@@ -71,7 +67,7 @@ public class ConstraintSatisfactionDominantSetSolver extends
 	            System.out.println("*** No");
 		
 		store.impose(new NetworkFlow(net));
-		return null;
+		
 	}
 
 }

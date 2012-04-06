@@ -1,53 +1,93 @@
 package solver;
 
+import graph.Edge;
 import graph.Graph;
+import graph.GraphMetrics;
 import graph.Vertex;
 
-import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Random;
 
 public abstract class AbstractDominantSetSolver implements DominantSetSolver{
-	private Graph g;
-	private Set<Vertex>dominantSet;
+	private Graph G;
+	private Vertex[]V;
+	private Edge[]E;
 	private int iterations = 0;
+	private int dsCount = 0;
 	private long elapsedTime = 0L;
+	private boolean shuffleBeforeSolve;
 	@Override
 	public void setGraph(Graph g) {
-		this.g=g;
-		this.dominantSet=new HashSet<Vertex>();
+		this.G = g;
+		this.V = g.getVertecies();
+		this.E = g.getEdges();
 	}
 
+	public Edge[] getEdges() {
+		return E;
+	}
+	
+	@Override
+	public int getDominantSetCardinality(){
+		reset();
+		if(isShuffleBeforeSolve()){
+			shuffle();
+		}
+		startTimer();
+		findDominantSet();
+		for(Vertex v:V){dsCount+=v.isDominant()?1:0;incrementIterations();}
+		G.setMetric(GraphMetrics.isSolved, !G.hasVertexNotLinkedToDominantVertex());
+		stopTimer();
+		return dsCount;
+	}
+	
 	@Override
 	public int getIteratinos() {
 		return iterations;
 	}
 
-	@Override
-	public Vertex[] getDominantSet() {
-		return this.dominantSet.toArray(new Vertex[this.dominantSet.size()]);
-	}
-
-	@Override
+//	@Override
 	public Graph getGraph() {
-		return g;
+		return G;
 	}
 	
-	@Override
-	public int getDominationNumber() {
-		return this.dominantSet.size();
+	private final void shuffle() {
+		final int I[]=new int[V.length];
+		for(int i=0;i<I.length;++i){I[i]=i;}
+		final Random r = new Random();
+		for(int i=0;i<I.length;++i){
+			int x=0,y=0;
+			while(x==y){
+				x = Math.abs(r.nextInt()) % I.length;
+				y = Math.abs(r.nextInt()) % I.length;
+			}
+			int tmp = I[x];
+			I[x]=I[y];
+			I[y]=tmp;
+		}
+		//List<Vertex>list=new ArrayList<Vertex>();
+		for(int i=0;i<I.length;i++){
+			Vertex t = V[I[i]];
+			V[I[i]]=V[i];
+			V[i]=t;
+		}
+	}
+	
+	public Vertex[] getVertecies() {
+		return V;
+	}
+	
+	
+	private boolean isShuffleBeforeSolve() {
+		return shuffleBeforeSolve;
 	}
 
 	@Override
-	public void solve() {
-		reset();
-		startTimer();
-		this.dominantSet = findDominantSet();
-		stopTimer();
+	public void setShuffleBeforeSolve(boolean shuffleBeforeSolve) {
+		this.shuffleBeforeSolve = shuffleBeforeSolve;
 	}
 	
-	protected abstract Set<Vertex> findDominantSet();
+	protected abstract void findDominantSet();
 
 	@Override
 	public void incrementIterations() {
@@ -70,14 +110,13 @@ public abstract class AbstractDominantSetSolver implements DominantSetSolver{
 	private final void reset() {
 		this.iterations=0;
 		this.elapsedTime=-1;
-		for(Vertex v:this.g.getVertecies()){
-			v.setConnectness(0.0);
-			v.setDominant(false);
-			v.setVisited(false);
-		}
+		this.dsCount=0;
+		for(Vertex v:V){resetVertex(v);}
 	}
-	@Override
-	public void setDominantSet(Collection<Vertex> vertices) {
-		this.dominantSet = new HashSet<Vertex>(vertices);
+	
+	private void resetVertex(Vertex v) {
+		v.setConnectness(0.0);
+		v.setDominant(false);
+		v.setVisited(false);
 	}
 }

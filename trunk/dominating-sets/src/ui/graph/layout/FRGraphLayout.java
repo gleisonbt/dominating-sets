@@ -1,6 +1,5 @@
 package ui.graph.layout;
 
-import edu.uci.ics.jung.algorithms.layout.FRLayout;
 import edu.uci.ics.jung.algorithms.layout.FRLayout2;
 import graph.Edge;
 import graph.JungGraph;
@@ -21,11 +20,6 @@ public class FRGraphLayout extends AbstractGraphLayout {
 		for(Vertex v:getGraph().getVertecies()){
 			this.setVertexLocation(v, new Double(layout.getX(v),layout.getY(v)) );
 		}
-	}
-
-	@Override
-	public Double next() {
-		return null;
 	}
 
 }

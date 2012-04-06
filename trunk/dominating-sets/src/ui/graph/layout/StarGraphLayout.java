@@ -22,7 +22,7 @@ public class StarGraphLayout extends AbstractGraphLayout {
 			setVertexLocation(v, next());
 		}
 	}
-	@Override
+
 	public Point2D.Double next(){
 		
 		final int x = (int) (xc + r*u * Math.cos(i * 2 * Math.PI/c));

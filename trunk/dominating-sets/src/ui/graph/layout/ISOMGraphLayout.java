@@ -23,10 +23,5 @@ public class ISOMGraphLayout extends AbstractGraphLayout {
 		}
 	}
 
-	@Override
-	public Double next() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
 }
