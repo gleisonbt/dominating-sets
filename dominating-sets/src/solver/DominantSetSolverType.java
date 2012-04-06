@@ -6,6 +6,7 @@ public enum DominantSetSolverType {
 	GrwingTree 	{public Class<? extends DominantSetSolver> clazz() {return GrowingTreeDominantSetSolver.class;}},
 	Propotional {public Class<? extends DominantSetSolver> clazz() {return ProbabilityDominantSetSolver.class;}},
 	//Constraint  {public Class<? extends DominantSetSolver> clazz() {return ConstraintSatisfactionDominantSetSolver.class;}},
-	LargestID 	{public Class<? extends DominantSetSolver> clazz() {return LargestIDDominantSetSolver.class;}};
+	LargestID 	{public Class<? extends DominantSetSolver> clazz() {return LargestIDDominantSetSolver.class;}},
+	LargestDegree 	{public Class<? extends DominantSetSolver> clazz() {return LargestDegreeDominantSetSolver.class;}};
 	public abstract Class<? extends DominantSetSolver> clazz();
 }

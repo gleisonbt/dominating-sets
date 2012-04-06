@@ -3,7 +3,6 @@ package ui.graph;
 
 import graph.Edge;
 import graph.Graph;
-import graph.Locateable;
 import graph.Vertex;
 
 import java.awt.Color;

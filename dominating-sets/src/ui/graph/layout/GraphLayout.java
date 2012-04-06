@@ -11,5 +11,4 @@ public interface GraphLayout{
 	void setGraph(Graph graph);
 	Graph getGraph();
 	void setVertexLocation(Vertex vertex,Point2D.Double location);
-	Point2D.Double next();
 }

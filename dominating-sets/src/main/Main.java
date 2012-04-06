@@ -3,7 +3,6 @@
  */
 package main;
 
-import graph.Graph;
 import ui.GraphViewer;
 
 /**

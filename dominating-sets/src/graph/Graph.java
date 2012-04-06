@@ -17,8 +17,8 @@ import java.util.Set;
  * @since 1.0
  */
 public class Graph{
-	private final Set<Edge>edges;
-	private final Set<Vertex>vertecies;
+	private Set<Edge>edges;
+	private Set<Vertex>vertecies;
 	private final char name;
 	private final String configuration;
 	private final EnumMap<GraphMetrics, Object>metrics;

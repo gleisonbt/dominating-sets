@@ -1,6 +1,5 @@
 package solver;
 
-import graph.Graph;
 import graph.Vertex;
 
 import java.util.Arrays;
@@ -24,10 +23,10 @@ import java.util.Set;
 public class LargestIDDominantSetSolver extends AbstractDominantSetSolver {
 	private Map<Vertex,Set<String>>ids;
 	@Override
-	protected Set<Vertex> findDominantSet() {
+	protected void findDominantSet() {
 		ids = new HashMap<Vertex,Set<String>>();
-		final Graph g = getGraph();
-		final Set<Vertex>V = new HashSet<Vertex>(Arrays.asList(g.getVertecies()));
+		//final Graph g = getGraph();
+		final Set<Vertex>V = new HashSet<Vertex>(Arrays.asList(getVertecies()));
 		final Set<Vertex>dominantSet = new HashSet<Vertex>();
 		boolean more = false;
 		do{
@@ -68,8 +67,9 @@ public class LargestIDDominantSetSolver extends AbstractDominantSetSolver {
 			final Vertex v = it.next();
 			if(!v.isVisited()) { v.setDominant(); dominantSet.add(v);}
 			incrementIterations();
+			
 		}
-		return dominantSet;
+		//return dominantSet;
 	}
 
 }

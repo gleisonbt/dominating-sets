@@ -6,9 +6,9 @@ import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.event.ChangeEvent;
@@ -42,18 +42,29 @@ public abstract class DominantSetSolverSelectionPanel extends JPanel implements 
 		
 		group.getElements().nextElement().setSelected(true);
 		
-		
+		final JPanel p = new JPanel(new BorderLayout());
 		final JButton b = new JButton("Solve");
 		b.addActionListener(this);
-		add(b,BorderLayout.SOUTH);
+		p.add(b,BorderLayout.SOUTH);
 		
+		final JCheckBox c = new JCheckBox("Shuffle before solve");
+		c.addChangeListener(new ChangeListener() {
+			@Override
+			public void stateChanged(ChangeEvent ae) {
+				shuffleBeforeSolve=c.isSelected();
+			}
+		});
+		p.add(c,BorderLayout.NORTH);
+		add(p,BorderLayout.SOUTH);
 		add(optionsPane,BorderLayout.NORTH);
 
-		
-		
 	}
 	private Class<? extends DominantSetSolver> selectedSolver;
+	private boolean shuffleBeforeSolve;
 	public Class<? extends DominantSetSolver> getSelectedSolver() {
 		return selectedSolver;
+	}
+	public boolean isShuffleBeforeSolve(){
+		return shuffleBeforeSolve;
 	}
 }

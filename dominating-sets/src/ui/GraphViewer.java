@@ -10,7 +10,6 @@ import java.awt.Dimension;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileWriter;
@@ -19,7 +18,6 @@ import java.util.regex.Pattern;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import solver.DominantSetSolver;
@@ -27,7 +25,6 @@ import ui.graph.GraphUI;
 import ui.graph.VertexUI;
 import ui.graph.layout.AbstractGraphLayout;
 import ui.graph.layout.GraphLayout;
-import ui.graph.layout.PlanarGraphLayout;
 import ui.text.MyEventQueue;
 
 public abstract class GraphViewer extends JFrame{
@@ -132,7 +129,7 @@ public abstract class GraphViewer extends JFrame{
 		solverPanel = new DominantSetSolverSelectionPanel() {		
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				findDominantSet();
+				findDominantSet(isShuffleBeforeSolve());
 			}
 		};
 		panel3.add(graphInfo,BorderLayout.CENTER);
@@ -200,13 +197,14 @@ public abstract class GraphViewer extends JFrame{
 			
 		}
 	}
-	protected void findDominantSet() {
+	protected void findDominantSet(boolean shuffle) {
 		try{
 			final DominantSetSolver ndsf = solverPanel.getSelectedSolver().newInstance();
 			ndsf.setGraph(graphUI.getGraph());
-			ndsf.solve();
+			ndsf.setShuffleBeforeSolve(shuffle);
+			//ndsf.solve();
 			final Graph g = graphUI.getGraph();
-			g.setMetric(GraphMetrics.DominantVertices,ndsf.getDominationNumber());
+			g.setMetric(GraphMetrics.DominantVertices,ndsf.getDominantSetCardinality());
 			g.setMetric(GraphMetrics.Iterations, ndsf.getIteratinos());
 			g.setMetric(GraphMetrics.SolveTime,ndsf.getElapsedTime());
 			g.setMetric(GraphMetrics.isSolved, !graphUI.getGraph().hasVertexNotLinkedToDominantVertex());
