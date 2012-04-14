@@ -33,7 +33,7 @@ public class ConstraintSatisfactionDominantSetSolver extends
 	protected void findDominantSet() {
 		
 		//final Graph  g = getGraph();
-		final Vertex[] V = getVertecies();
+		final Vertex[] V = getVertices();
 		Store store  = new Store();
 		NetworkBuilder net = new NetworkBuilder();
 		List<IntVar>l=new ArrayList<IntVar>();
