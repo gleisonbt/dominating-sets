@@ -73,7 +73,7 @@ public abstract class AbstractDominantSetSolver implements DominantSetSolver{
 		}
 	}
 	
-	public Vertex[] getVertecies() {
+	public Vertex[] getVertices() {
 		return V;
 	}
 	

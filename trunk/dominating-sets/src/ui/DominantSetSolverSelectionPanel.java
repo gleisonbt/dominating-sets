@@ -33,7 +33,7 @@ public abstract class DominantSetSolverSelectionPanel extends JPanel implements 
 				@Override
 				public void stateChanged(ChangeEvent ce) {
 					if(rbutton.isSelected()){
-						selectedSolver=dominantSetFinderType.clazz();
+						selectedSolver=dominantSetFinderType.solver();
 					}
 				}
 			});

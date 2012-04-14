@@ -12,17 +12,20 @@ public class LargestDegreeDominantSetSolver extends AbstractDominantSetSolver {
 
 	@Override
 	protected void findDominantSet() {
-		SortedSet<Vertex>sorted=new TreeSet<Vertex>(new Comparator<Vertex>(){
+		final SortedSet<Vertex>sorted=new TreeSet<Vertex>(new Comparator<Vertex>(){
 			public int compare(Vertex a,Vertex b){
 				return a.degree()>b.degree()?-1:1;
 			}
 		});
-		sorted.addAll(Arrays.asList(getVertecies()));
+		sorted.addAll(Arrays.asList(getVertices()));
 		
-		for(final Iterator<Vertex>it=sorted.iterator();it.hasNext() && getGraph().hasVertexNotLinkedToDominantVertex();){
+		for(final Iterator<Vertex>it=sorted.iterator();it.hasNext();){
 			final Vertex v = it.next();
-			v.setDominant();
+			v.setDominant();			// mark nodes dominant
 			incrementIterations();
+			if(!getGraph().hasVertexNotLinkedToDominantVertex()){
+				break;					// if 
+			}
 		}
 		for(final Iterator<Vertex>it=sorted.iterator();it.hasNext();){
 			final Vertex v = it.next();

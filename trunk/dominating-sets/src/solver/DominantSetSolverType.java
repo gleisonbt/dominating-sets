@@ -2,11 +2,17 @@ package solver;
 
 
 public enum DominantSetSolverType {
-	Naive 		{public Class<? extends DominantSetSolver> clazz() {return NaiveDominantSetSolver.class;}},
-	GrwingTree 	{public Class<? extends DominantSetSolver> clazz() {return GrowingTreeDominantSetSolver.class;}},
-	Propotional {public Class<? extends DominantSetSolver> clazz() {return ProbabilityDominantSetSolver.class;}},
-	//Constraint  {public Class<? extends DominantSetSolver> clazz() {return ConstraintSatisfactionDominantSetSolver.class;}},
-	LargestID 	{public Class<? extends DominantSetSolver> clazz() {return LargestIDDominantSetSolver.class;}},
-	LargestDegree 	{public Class<? extends DominantSetSolver> clazz() {return LargestDegreeDominantSetSolver.class;}};
-	public abstract Class<? extends DominantSetSolver> clazz();
+	Naive 			(NaiveDominantSetSolver.class),
+	GrowingTree 	(GrowingTreeDominantSetSolver.class),
+	Proportional 	(ProportionalDominantSetSolver.class),
+	LargestID 		(LargestIDDominantSetSolver.class),
+	LargestDegree 	(LargestDegreeDominantSetSolver.class);
+	
+	final private Class<? extends DominantSetSolver>solver;
+	
+	DominantSetSolverType(Class<? extends DominantSetSolver> solver){
+		this.solver=solver;
+	}
+	
+	public Class<? extends DominantSetSolver> solver(){return solver;}
 }

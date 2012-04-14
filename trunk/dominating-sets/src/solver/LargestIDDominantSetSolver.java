@@ -26,11 +26,10 @@ public class LargestIDDominantSetSolver extends AbstractDominantSetSolver {
 	protected void findDominantSet() {
 		ids = new HashMap<Vertex,Set<String>>();
 		//final Graph g = getGraph();
-		final Set<Vertex>V = new HashSet<Vertex>(Arrays.asList(getVertecies()));
-		final Set<Vertex>dominantSet = new HashSet<Vertex>();
+		final Set<Vertex>V = new HashSet<Vertex>(Arrays.asList(getVertices()));
 		boolean more = false;
 		do{
-			//initialize vertecis map
+			//initialize vertices map
 			for(Vertex v:V){
 				if(v.isVisited()) continue;
 				ids.put(v, new HashSet<String>());
@@ -40,7 +39,7 @@ public class LargestIDDominantSetSolver extends AbstractDominantSetSolver {
 			for(Vertex v:V){
 				if(v.isVisited()) continue;
 				incrementIterations();
-				Vertex[]N=v.getNeighborVertecies();
+				final Vertex[]N=v.getNeighborVertecies();
 				for(Vertex u:N){
 					if(u.isVisited()) continue;
 					ids.get(u).add(v.getName());
@@ -48,7 +47,7 @@ public class LargestIDDominantSetSolver extends AbstractDominantSetSolver {
 					max = Math.max(max, ids.get(u).size());
 					incrementIterations();
 				}
-
+		
 			}
 			if(max==-1) break;
 			final Iterator<Vertex>it=V.iterator();
@@ -62,14 +61,13 @@ public class LargestIDDominantSetSolver extends AbstractDominantSetSolver {
 				incrementIterations();
 			}
 		}while(more);
-
+		
 		for(final Iterator<Vertex> it=V.iterator();it.hasNext();){
 			final Vertex v = it.next();
-			if(!v.isVisited()) { v.setDominant(); dominantSet.add(v);}
+			if(!v.isVisited()) { v.setDominant();}
 			incrementIterations();
 			
 		}
-		//return dominantSet;
 	}
 
 }

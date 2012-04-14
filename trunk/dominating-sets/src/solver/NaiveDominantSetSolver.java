@@ -19,22 +19,23 @@ public class NaiveDominantSetSolver extends AbstractDominantSetSolver {
 
 	@Override
 	protected void findDominantSet(){
-		final Vertex[] V = getVertecies();
+		final Vertex[] V = getVertices();
 		final List<Vertex>dominantSet = Graph.asList(V);
 		int size;
-		
 		do{
-			size = dominantSet.size();
+			size = dominantSet.size();	// get the cardinality of dominant set
 			final List<Vertex>dominantSetCopy = new ArrayList<Vertex>(dominantSet);
-			for(Vertex v:dominantSetCopy){
-				v.setDominant(false);
-				dominantSet.remove(v);
-				if(!v.isLinkedToDominantVertex()){
-					v.setDominant(true);
-					dominantSet.add(v);	
+			for(final Vertex v:dominantSetCopy){	//iterate over all vertices
+				v.setDominant(false);				//unmark vertex v
+				dominantSet.remove(v);				//remove it from the set 
+				if(!v.isLinkedToDominantVertex()){	// if the vertex is not linked 
+					v.setDominant(true);			// to a dominant vertex 
+					dominantSet.add(v);				// mark it again
 				}else{
-					Vertex[]N=v.getNeighborVertecies();
-					for(Vertex u:N){
+					// if unmarking v has not made any of the neighbor to be affected
+					// carry on, otherwize, mark v again as dominant
+					final Vertex[]N=v.getNeighborVertecies();	// get neighbors of v
+					for(final Vertex u:N){
 						if(!(u.isDominant() || u.isLinkedToDominantVertex())){
 							v.setDominant(true);
 							dominantSet.add(v);	
@@ -45,12 +46,5 @@ public class NaiveDominantSetSolver extends AbstractDominantSetSolver {
 				incrementIterations();
 			}
 		}while(size!=dominantSet.size());
-		
-		//return new HashSet<Vertex>(dominantSet);
 	}
-
-
-	
-	
-	
 }
