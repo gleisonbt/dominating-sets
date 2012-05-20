@@ -23,12 +23,19 @@
   </path>
   
   <target name="compile">
-    <javac destdir="${bin}" debug="${debug}" deprecation="on" optimize="off" srcdir="${src}" classpathref="build.classpath" includes="*.*"/>
+    <javac destdir="${bin}" debug="${debug}" includeantruntime="off" deprecation="on" optimize="off" srcdir="${src}" classpathref="build.classpath" includes="*.*"/>
   </target>
   
   
   <target name="jar" depends="compile">
-    <jar jarfile="${jar}" manifest="${manifest}" basedir="${bin}" excludes="test/**/*.*,*/**/*Test*.*" includes="*/**/*.*,**/*.*.*,*.*"/>
+    <jar jarfile="${jar}" basedir="${bin}" excludes="test/**/*.*,*/**/*Test*.*">
+    	<manifest>
+    		<attribute name="Main-Class" value="main.Main" />
+    	</manifest>
+    	<zipfileset includes="**/*.class" src="${lib}/jung-algorithms-2.0.1.jar"/>
+    	<zipfileset includes="**/*.class" src="${lib}/jung-api-2.0.1.jar"/>
+    	<zipfileset includes="**/*.class" src="${lib}/collections-generic-4.01.jar"/>
+    </jar>
   </target>
 
 
