@@ -9,9 +9,7 @@
   <property name="jnlp"     value="jnlp/${name}-${version}.jnlp"/>
   <property name="debug"    value="on"/>
   <property name="main-class" value="main.Main"/>
-  <!--
-    keytool -genkey -keystore hussainmutawastore -alias hussainmutawakey -storepass hussainmutawastorepass -keypass hussainmutawastorepass -dname "CN=Hussain Al-Mutawa, OU=Massey University-SEAT, O=Software Engineering, L=Palmerston North, S=Manawatu, C=NZ"
-  -->  
+ 
 
   <property name="vendor"         value="Hussain Al-Mutawa"/>
   <property name="vendor-address" value="CN=${vendor}, OU=Massey University-SEAT, O=Software Engineering, L=Palmerston North, S=Manawatu, C=NZ"/>  
